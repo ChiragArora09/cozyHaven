@@ -9,24 +9,20 @@ import com.group_3.cozyHaven.repository.UserRepository;
 
 @Service
 public class UserService {
+
 	@Autowired
 	private UserRepository userRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	
 	public User adduser(User user) {
-		
-		//encrypt the password 
-				String plainText = user.getPassword();
-				//encode this  
-				String encryptedPassword  = passwordEncoder.encode(plainText);
-				//attach this to User obj 
-				user.setPassword(encryptedPassword);
+		String plainText = user.getPassword();  
+		String encryptedPassword  = passwordEncoder.encode(plainText);
+		user.setPassword(encryptedPassword);
 
-				return userRepository.save(user);
-		
+		return userRepository.save(user);
 	}
-
 
 }
