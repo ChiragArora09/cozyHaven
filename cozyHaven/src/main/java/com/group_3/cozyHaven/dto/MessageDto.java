@@ -14,5 +14,5 @@ public class MessageDto {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
+
 }
