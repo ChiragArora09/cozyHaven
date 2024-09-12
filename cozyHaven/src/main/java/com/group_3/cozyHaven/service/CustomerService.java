@@ -3,9 +3,9 @@ package com.group_3.cozyHaven.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.group_3.cozyHaven.enums.RoleType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.User;
@@ -19,6 +19,12 @@ public class CustomerService {
 	@Autowired
 	private CustomerRepository customerRepository;
 	
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	private Logger logger=LoggerFactory.getLogger(CustomerService.class);
 	
 	@Autowired
@@ -27,8 +33,10 @@ public class CustomerService {
 	public Customer addCustomer(Customer customer) {
 		
 		User user=customer.getUser();
-		user.setRole(RoleType.CUSTOMER);
-		user=userService.adduser(user);
+		user.setRole("ROLE_CUSTOMER");
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+		user = userRepository.save(user); 
 		customer.setUser(user);
 		logger.info("adding employee to db" +customer);
 

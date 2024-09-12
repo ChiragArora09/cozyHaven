@@ -3,13 +3,14 @@ package com.group_3.cozyHaven.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.group_3.cozyHaven.enums.RoleType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.ServiceProvider;
 import com.group_3.cozyHaven.model.User;
 import com.group_3.cozyHaven.repository.ServiceProviderRepository;
+import com.group_3.cozyHaven.repository.UserRepository;
 
 @Service
 public class ServiceProviderService {
@@ -18,13 +19,20 @@ public class ServiceProviderService {
 	private ServiceProviderRepository serviceProviderRepository;
 	
 	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
 	private UserService userService;
 	
-	public Object addServiceProvider(ServiceProvider serviceProvider) {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	public ServiceProvider addServiceProvider(ServiceProvider serviceProvider) {
 		User user = serviceProvider.getUser();
-		user.setRole(RoleType.SERVICE_PROVIDER);
-		user = userService.adduser(user);
+		user.setRole("ROLE_SERVICE_PROVIDER");
 		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user = userRepository.save(user); 
 		serviceProvider.setUser(user);
 		
 		return serviceProviderRepository.save(serviceProvider) ;
