@@ -1,20 +1,29 @@
 package com.group_3.cozyHaven.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
+import com.group_3.cozyHaven.dto.FlightInputDto;
 import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Flight;
+import com.group_3.cozyHaven.model.FlightClass;
 import com.group_3.cozyHaven.model.FlightRoute;
+import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.model.Route;
+import com.group_3.cozyHaven.service.FlightClassService;
 import com.group_3.cozyHaven.service.FlightRouteService;
+import com.group_3.cozyHaven.service.FlightSeatService;
 import com.group_3.cozyHaven.service.FlightService;
 import com.group_3.cozyHaven.service.RouteService;
 
@@ -30,6 +39,12 @@ public class FlightController {
 	
 	@Autowired
 	private RouteService routeService;
+	
+	@Autowired
+	private FlightClassService flightClassService;
+	
+	@Autowired
+	private FlightSeatService flightSeatService;
 	
 	@PostMapping("/add/{serviceProviderId}")
 	public ResponseEntity<?> addFlight(@PathVariable int serviceProviderId, @RequestBody Flight flight, MessageDto dto){
@@ -58,5 +73,37 @@ public class FlightController {
 			return ResponseEntity.badRequest().body(dto); 
 		}
 	}
-
+	
+	@PostMapping("/add/flight-class/{fid}")
+	public ResponseEntity<?> addFlightClass(@PathVariable int fid, @RequestBody FlightClass flightClass, MessageDto dto){
+		try {
+			flightClass = flightClassService.addFlightClass(fid, flightClass);
+			return ResponseEntity.ok(flightClass); 
+		} catch (InvalidIdException e) {
+			dto.setMsg(e.getMessage());
+			return ResponseEntity.badRequest().body(dto); 
+		}
+	}
+	
+	@PostMapping("/add/flight-seat/{cid}")
+	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody FlightSeat flightSeat, MessageDto dto){
+		try {
+			flightSeat = flightSeatService.addFlightSeat(cid, flightSeat);
+			return ResponseEntity.ok(flightSeat); 
+		} catch (InvalidIdException e) {
+			dto.setMsg(e.getMessage());
+			return ResponseEntity.badRequest().body(dto); 
+		}
+	}
+	
+//	@GetMapping("/flight-between-station/{source}/{destination}/{classType}")
+//	public List<FlightBetweenStopsDto> flightBetweenStops(@PathVariable String source, @PathVariable String destination, @PathVariable ClassType classType){
+//		return flightService.getFlightBetweenStops(source, destination, classType);
+//	}
+	
+	@GetMapping("/flight-between-station")
+	public List<FlightBetweenStopsDto> flightBetweenStops(@RequestBody FlightInputDto flightInputDto){
+		return flightService.getFlightBetweenStops(flightInputDto.getSource(), flightInputDto.getDestination(), flightInputDto.getClassType());
+	}
+	
 }

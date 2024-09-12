@@ -35,7 +35,8 @@ public class SecurityConfig {
 	            .requestMatchers("/admin/hello").hasRole("ADMIN")
 	            .requestMatchers("/customer/hello").hasRole("CUSTOMER")
 	            .requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER") 
-	            .anyRequest().authenticated()
+//	            .anyRequest().authenticated()
+	            .anyRequest().permitAll()
 	        )
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
