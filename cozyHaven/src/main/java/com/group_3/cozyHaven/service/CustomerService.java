@@ -1,5 +1,7 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,14 @@ public class CustomerService {
 			throw new InputValidationException("Field employee.contact cannot be blank ");
 		}
 		
+	}
+	
+	public Customer getById(int id) throws InputValidationException {
+		Optional<Customer> option = customerRepository.findById(id);
+		if(option.isEmpty()) {
+			throw new InputValidationException("Invalid ID");
+		}
+		return option.get();
 	}
 
 }

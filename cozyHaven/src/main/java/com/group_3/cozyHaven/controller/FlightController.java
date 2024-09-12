@@ -17,14 +17,18 @@ import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Flight;
+import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightClass;
 import com.group_3.cozyHaven.model.FlightRoute;
 import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.model.Route;
+import com.group_3.cozyHaven.service.FlightBookingService;
 import com.group_3.cozyHaven.service.FlightClassService;
 import com.group_3.cozyHaven.service.FlightRouteService;
+import com.group_3.cozyHaven.service.FlightSeatBookingService;
 import com.group_3.cozyHaven.service.FlightSeatService;
 import com.group_3.cozyHaven.service.FlightService;
+import com.group_3.cozyHaven.service.FlightTravellerService;
 import com.group_3.cozyHaven.service.RouteService;
 
 @RestController
@@ -45,6 +49,15 @@ public class FlightController {
 	
 	@Autowired
 	private FlightSeatService flightSeatService;
+	
+	@Autowired
+	private FlightBookingService flightBookingService;
+	
+	@Autowired
+	private FlightTravellerService flightTravellerService;
+	
+	@Autowired
+	private FlightSeatBookingService flightSeatBookingService;
 	
 	@PostMapping("/add/{serviceProviderId}")
 	public ResponseEntity<?> addFlight(@PathVariable int serviceProviderId, @RequestBody Flight flight, MessageDto dto){
@@ -96,14 +109,15 @@ public class FlightController {
 		}
 	}
 	
-//	@GetMapping("/flight-between-station/{source}/{destination}/{classType}")
-//	public List<FlightBetweenStopsDto> flightBetweenStops(@PathVariable String source, @PathVariable String destination, @PathVariable ClassType classType){
-//		return flightService.getFlightBetweenStops(source, destination, classType);
-//	}
-	
 	@GetMapping("/flight-between-station")
 	public List<FlightBetweenStopsDto> flightBetweenStops(@RequestBody FlightInputDto flightInputDto){
 		return flightService.getFlightBetweenStops(flightInputDto.getSource(), flightInputDto.getDestination(), flightInputDto.getClassType());
+	}
+	
+	@PostMapping("/booking/{cid}/{fid}")
+	public ResponseEntity<?> addBooking(@PathVariable int cid, @PathVariable int fid, @RequestBody FlightBooking flightBooking, MessageDto dto) throws InputValidationException{
+			flightBooking = flightBookingService.addBooking(cid, fid, flightBooking);
+			return ResponseEntity.ok(flightBooking); 
 	}
 	
 }
