@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightClass;
 import com.group_3.cozyHaven.model.FlightRoute;
 import com.group_3.cozyHaven.model.FlightSeat;
+import com.group_3.cozyHaven.model.FlightTraveller;
 import com.group_3.cozyHaven.model.Route;
 import com.group_3.cozyHaven.service.FlightBookingService;
 import com.group_3.cozyHaven.service.FlightClassService;
@@ -115,9 +117,22 @@ public class FlightController {
 	}
 	
 	@PostMapping("/booking/{cid}/{fid}")
-	public ResponseEntity<?> addBooking(@PathVariable int cid, @PathVariable int fid, @RequestBody FlightBooking flightBooking, MessageDto dto) throws InputValidationException{
+	public ResponseEntity<?> addBooking(@PathVariable int cid, @PathVariable int fid, @RequestBody FlightBooking flightBooking) throws InputValidationException{
 			flightBooking = flightBookingService.addBooking(cid, fid, flightBooking);
 			return ResponseEntity.ok(flightBooking); 
 	}
+	
+	@PostMapping("/booking/{bid}/travellers")
+	public ResponseEntity<?> addTravellers(@PathVariable int bid, @RequestBody FlightTraveller flightTraveller) throws InputValidationException{
+		flightTraveller = flightTravellerService.addTraveller(bid, flightTraveller);
+		return ResponseEntity.ok(flightTraveller);
+	}
+	
+	@GetMapping("/booking/{fid}/get-seats")
+	public List<?> getAvailableSeats (@PathVariable int fid, @RequestBody String date) {
+		return flightSeatService.getAvailableSeats(fid, date);	
+	}
+	
+	
 	
 }

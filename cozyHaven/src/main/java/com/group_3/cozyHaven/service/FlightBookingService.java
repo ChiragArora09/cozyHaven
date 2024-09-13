@@ -1,5 +1,7 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,14 @@ public class FlightBookingService {
 		flightBooking.setCustomer(customer);
 		flightBooking.setStatus("Pending");
 		return flightBookingRepository.save(flightBooking);
+	}
+	
+	public FlightBooking getById(int bid) throws InputValidationException {
+		Optional<FlightBooking> option = flightBookingRepository.findById(bid);
+		if(option.isEmpty()) {
+			throw new InputValidationException("Invalid ID");
+		}
+		return option.get();
 	}
 
 }
