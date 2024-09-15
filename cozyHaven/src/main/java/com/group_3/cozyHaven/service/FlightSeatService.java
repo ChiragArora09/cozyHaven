@@ -2,6 +2,7 @@ package com.group_3.cozyHaven.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,14 @@ public class FlightSeatService {
 		}
 		return listDto;
 	}
+
+	public FlightSeat getById(int seatId) throws InvalidIdException {
+			Optional<FlightSeat> optional = flightSeatRepository.findById(seatId);
+			if(optional.isEmpty())
+				throw new InvalidIdException("Flight Id invalid");
+			
+			return optional.get();
+	}
+
 
 }
