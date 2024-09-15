@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightSeatBooking;
 
 public interface FlightSeatBookingRepository extends JpaRepository<FlightSeatBooking, Integer>{

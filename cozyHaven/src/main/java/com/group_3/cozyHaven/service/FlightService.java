@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
 import com.group_3.cozyHaven.enums.ClassType;
 import com.group_3.cozyHaven.exception.InputValidationException;
@@ -56,4 +57,25 @@ public class FlightService {
 		}
 		return listDto;
 	}
+
+	public List<BookingTicket> getBookingTicket(int bid) {
+		List<Object[]> list = flightRepository.getBookingTicket(bid);
+		List<BookingTicket> listDto = new ArrayList<>();
+		for(Object[] obj : list) {
+			String date = obj[0].toString();
+			String source = obj[1].toString();
+			String destination = obj[2].toString();
+			String status = obj[3].toString();
+			String seatNumber = obj[4].toString();
+			String type = obj[5].toString();
+			String flightName = obj[6].toString();
+			String travellerName = obj[7].toString();
+			int age = (int) obj[8];
+			BookingTicket bookingTicket = new BookingTicket(date, source, destination, status, seatNumber, type, flightName, travellerName, age);
+			listDto.add(bookingTicket);
+		}
+		return listDto;
+	}
+	
+	
 }

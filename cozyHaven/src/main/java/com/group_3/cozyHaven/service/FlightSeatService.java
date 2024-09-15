@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class FlightSeatService {
 		return flightSeatRepository.save(flightSeat);
 	}
 
-	public List<?> getAvailableSeats(int fid, String date) {
+	public List<?> getAvailableSeats(int fid, LocalDate date) {
 		List<Object[]> list = flightSeatRepository.getAvailableSeats(fid, date);
 		List<String> listDto = new ArrayList<>();
 		for(Object[] obj : list) {

@@ -8,11 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
 import com.group_3.cozyHaven.dto.FlightInputDto;
 import com.group_3.cozyHaven.dto.MessageDto;
@@ -108,7 +108,7 @@ public class FlightController {
 		}
 	}
 	
-	
+	// ADDING SEATS TO A FLIGHT
 	@PostMapping("/add/flight-seat/{cid}")
 	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody FlightSeat flightSeat, MessageDto dto){
 		try {
@@ -120,37 +120,52 @@ public class FlightController {
 		}
 	}
 	
+	// GETTING FLIGHT INFORMATION BETWEEN TWO STOPS
 	@GetMapping("/flight-between-station")
 	public List<FlightBetweenStopsDto> flightBetweenStops(@RequestBody FlightInputDto flightInputDto){
 		return flightService.getFlightBetweenStops(flightInputDto.getSource(), flightInputDto.getDestination(), flightInputDto.getClassType());
 	}
 	
+	// MAKING GENERAL BOOKING WITH STATUS PENDING
 	@PostMapping("/booking/{cust_id}/{fid}")
 	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int fid, @RequestBody FlightBooking flightBooking) throws InputValidationException{
 			flightBooking = flightBookingService.addBooking(cust_id, fid, flightBooking);
 			return ResponseEntity.ok(flightBooking); 
 	}
 	
-	@PostMapping("/booking/{bid}/travellers")
+	// ADDING TRAVELLERS FOR A PARTICULAR BOOKING
+	@PostMapping("/booking/travellers/{bid}")
 	public ResponseEntity<?> addTravellers(@PathVariable int bid, @RequestBody FlightTraveller flightTraveller) throws InputValidationException{
 		flightTraveller = flightTravellerService.addTraveller(bid, flightTraveller);
 		return ResponseEntity.ok(flightTraveller);
 	}
 	
+	// CHECKING AVAILABLE SEATS
 	@GetMapping("/booking/{fid}/get-seats")
-	public List<?> getAvailableSeats (@PathVariable int fid, @RequestBody String date) {
+	public List<?> getAvailableSeats (@PathVariable int fid, @RequestBody LocalDate date) {
 		return flightSeatService.getAvailableSeats(fid, date);	
 	}
 	
+	// SELECTING SEATS AND PROCEEDING
 	@PostMapping("/confirm-booking/{bid}")
 	public ResponseEntity<?> confirmBooking(@PathVariable int bid, @RequestBody int flightSeat) throws InputValidationException, InvalidIdException{
 		FlightSeatBooking flightBooking = flightSeatBookingService.confirmBooking(bid, flightSeat);
 		return ResponseEntity.ok(flightBooking);	
 	}
 	
+	// GETTING PAYMENT INFO
 	@PostMapping("/payment/{bid}") // flight_booking_id
-	public ResponseEntity<?> totalAmountCalculation(@PathVariable int bid) throws InputValidationException{
+	public ResponseEntity<?> totalAmountCalculation(@PathVariable int bid) throws InputValidationException {
 		List<Payment> payment = flightSeatBookingService.calculateTotalAmount(bid);
 		return ResponseEntity.ok(payment);
 	}
+	
+	// GETTING BOOKING TICKET
+	@GetMapping("/booking-ticket/{bid}")
+	public List<BookingTicket> getBookingReceipt(@PathVariable int bid) {
+		return flightService.getBookingTicket(bid);
+	}
+	
+	
+	
 }

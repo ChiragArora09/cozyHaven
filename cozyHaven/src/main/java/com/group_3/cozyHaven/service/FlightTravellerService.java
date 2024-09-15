@@ -19,6 +19,7 @@ public class FlightTravellerService {
 
 	public FlightTraveller addTraveller(int bid, FlightTraveller flightTraveller) throws InputValidationException {
 		FlightBooking flightBooking = flightBookingService.getById(bid);
+		System.out.println(flightBooking);
 		flightTraveller.setFlightBooking(flightBooking);
 		return flightTravellerRepository.save(flightTraveller);
 	}
