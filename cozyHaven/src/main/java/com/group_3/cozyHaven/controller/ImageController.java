@@ -24,9 +24,9 @@ public class ImageController {
 	@Autowired
 	private ImageService imageService;
 	
-	@PostMapping("/fileSystem/{hotelId}")
-	public ResponseEntity<?> uploadImage(@RequestParam("images") MultipartFile[] file, @PathVariable("hotelId") int hotelId) throws IOException{
-		List<String> uploadImage=imageService.uploadImage(file,hotelId);
+	@PostMapping("/upload/{hotelId}/{roomId}")
+	public ResponseEntity<?> uploadImage(@RequestParam MultipartFile[] file,@PathVariable int hotelId, @PathVariable int roomId) throws IOException{
+		List<String> uploadImage=imageService.uploadImage(file,hotelId,roomId);
 		return ResponseEntity.ok(uploadImage);
 	}
 	

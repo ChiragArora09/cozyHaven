@@ -1,15 +1,23 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.enums.RoomType;
 import com.group_3.cozyHaven.exception.InputValidationException;
+import com.group_3.cozyHaven.model.Booking;
 import com.group_3.cozyHaven.model.Customer;
+import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.model.User;
+import com.group_3.cozyHaven.repository.BookingRepository;
 import com.group_3.cozyHaven.repository.CustomerRepository;
+import com.group_3.cozyHaven.repository.RoomRepository;
 import com.group_3.cozyHaven.repository.UserRepository;
 
 
@@ -29,6 +37,12 @@ public class CustomerService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RoomRepository roomRepository;
+	
+	@Autowired 
+	private BookingRepository bookingRepository;
 
 	public Customer addCustomer(Customer customer) {
 		
@@ -61,5 +75,10 @@ public class CustomerService {
 		}
 		
 	}
+
+
+
+   
+		
 
 }

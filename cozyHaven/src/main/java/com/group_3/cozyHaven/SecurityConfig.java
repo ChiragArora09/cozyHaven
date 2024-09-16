@@ -30,11 +30,35 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http.csrf(AbstractHttpConfigurer::disable)
 	        .authorizeHttpRequests(auth -> auth
+	        		
+	            // Permit all for token generation and signup
 	            .requestMatchers("/auth/token").permitAll()
 	            .requestMatchers("/auth/signup").permitAll()
+	            
+	            // Role-based access 
 	            .requestMatchers("/admin/hello").hasRole("ADMIN")
 	            .requestMatchers("/customer/hello").hasRole("CUSTOMER")
 	            .requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER") 
+	            
+	            // Allow service provider to add rooms, hotels, etc.
+	            .requestMatchers("service-provider/add").permitAll()
+	            .requestMatchers("/hotel/add/{serviceProviderId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/add/{serviceProviderId}/{hotelId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/image/upload/{hotelId}/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/amenities/add/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/update/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/updateAvailabity").hasRole("SERVICE_PROVIDER")
+	            
+	            //allow customers to fetch and book hotels rooms
+	            .requestMatchers("/customer/add").permitAll()
+	            .requestMatchers("hotel/{location}").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/rooms/{hotelId}").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/amenities/{roomId}").hasRole("CUSTOMER")
+	            .requestMatchers("/customer/booking/{customerId}/{roomId}").hasRole("CUSTOMER")
+	            .requestMatchers("/room/{hotelId}/{roomType}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking//room/{roomId}/{customerId}").hasRole("CUSTOMER")
+	            
+
 	            .anyRequest().authenticated()
 	        )
 	        .sessionManagement(session -> session

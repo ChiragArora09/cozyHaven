@@ -1,5 +1,7 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,11 @@ public class HotelService {
 		hotel.setServiceProvider(serviceProvider);
 		return hotelRepository.save(hotel);
 		
+		
+	}
+
+	public List<Hotel> searchHotelByLocation(String location) {
+		return hotelRepository.findByLocation(location);
 		
 	}
 

@@ -38,7 +38,7 @@ public class UserController {
     
     @PostMapping("/auth/signup")
     public void signup(@RequestBody User user) {
-    	user.setRole("ROLE_ADMIN");
+    	user.setRole("ROLE_CUSTOMER");
     	user.setPassword(passwordEncoder.encode(user.getPassword()));
     	userRepository.save(user);
     }

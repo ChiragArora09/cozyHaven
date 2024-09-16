@@ -18,7 +18,7 @@ public class Image {
 	private String filePath;
 	
 	@ManyToOne
-	private Hotel hotel;
+	private Room room;
 
 	public int getId() {
 		return id;
@@ -44,18 +44,20 @@ public class Image {
 		this.filePath = filePath;
 	}
 
-	public Hotel getHotel() {
-		return hotel;
+	public Room getRoom() {
+		return room;
 	}
 
-	public void setHotel(Hotel hotel) {
-		this.hotel = hotel;
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 
 	@Override
 	public String toString() {
-		return "Image [id=" + id + ", imageName=" + imageName + ", filePath=" + filePath + ", hotel=" + hotel + "]";
+		return "Image [id=" + id + ", imageName=" + imageName + ", filePath=" + filePath + ", room=" + room + "]";
 	}
+
+	
 	
 	
 	

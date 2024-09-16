@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.group_3.cozyHaven.model.Hotel;
+import com.group_3.cozyHaven.model.Amenities;
 
 @Repository
-public interface HotelRepository extends JpaRepository<Hotel, Integer>{
+public interface AmenitiesRepository extends JpaRepository<Amenities,Integer>{
 	
-	@Query("SELECT h from Hotel h where h.location=?1")
-	List<Hotel> findByLocation(String location);
+	@Query("select a from Amenities a where a.room.id=?1")
+	List<Amenities> findByRoomId(int roomId);
 
 }

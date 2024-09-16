@@ -1,6 +1,6 @@
 package com.group_3.cozyHaven.service;
 
-import java.io.File;
+ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Hotel;
 import com.group_3.cozyHaven.model.Image;
-import com.group_3.cozyHaven.repository.HotelRepository;
+import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.repository.ImageRepository;
+import com.group_3.cozyHaven.repository.RoomRepository;
 
 @Service
 public class ImageService {
@@ -23,16 +24,21 @@ public class ImageService {
     private ImageRepository imageRepository;
     
     @Autowired
-    private HotelRepository hotelRepository;
+    private RoomService roomService;
+    
+    
+    @Autowired
+    private RoomRepository roomRepository;
+    
     private final String folderPath = "C:\\Users\\ADMIN\\Desktop\\HotelImage";
 
-    public List<String> uploadImage(MultipartFile[] files, int hotelId) throws IOException {
+    public List<String> uploadImage(MultipartFile[] files, int hotelId,int roomId) throws IOException {
         List<String> uploadedFilePaths = new ArrayList<>();
-        Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
-        if (optionalHotel.isEmpty()) {
-            throw new RuntimeException("Hotel not found with id: " + hotelId);
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty()) {
+            throw new RuntimeException("Room not found with id: " + roomId);
         }
-        Hotel hotel = optionalHotel.get();
+        Room room = optionalRoom.get();
         for (MultipartFile file : files) {
             String originalName = file.getOriginalFilename();
             if (originalName == null || originalName.isEmpty()) {
@@ -51,7 +57,7 @@ public class ImageService {
             Image image = new Image();
             image.setImageName(originalName);
             image.setFilePath(filepath);
-            image.setHotel(hotel);
+            image.setRoom(room);
             imageRepository.save(image);
             try {
                 file.transferTo(new File(filepath));
