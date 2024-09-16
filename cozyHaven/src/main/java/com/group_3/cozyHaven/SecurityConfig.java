@@ -60,6 +60,18 @@ public class SecurityConfig {
 	            
 
 	            .anyRequest().authenticated()
+
+	            .requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/service-provider/add").permitAll()
+	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
+                .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
+                .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
+	            .anyRequest().authenticated()
+	            .anyRequest().permitAll()
+
 	        )
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
