@@ -60,18 +60,12 @@ public class FlightSeatBookingService {
 			seatIds.add(seat);
 		}
 		
-//		FlightBooking flightBooking = flightBookingService.getById(bid);
-//		String source = flightBooking.getSource();
-//		String destination = flightBooking.getDestination();
-		
 		List<Payment> paymentInfo = new ArrayList<>();
 		
-//		Error is in this part
 		for (int i=0;i<seatIds.size();i++) {
 			int seatId = seatIds.get(i);
 
 			List<Object[]> list3 = flightSeatBookingRepository.getSeatAmountInfo(seatId);
-			
 			for(Object[] obj : list3) {
 				String seatNumber = obj[0].toString();
 				String classType = obj[1].toString();
@@ -99,30 +93,3 @@ public class FlightSeatBookingService {
 	}
 
 }
-
-
-//public List<FlightBetweenStopsDto> getFlightBetweenStops(String source, String destination, ClassType classType) {
-//	
-//	List<Object[]> list = flightRepository.getFlightBetweenStops(source, destination, classType);
-//		List<FlightBetweenStopsDto> listDto = new ArrayList<>();
-//	for(Object[] obj : list) {
-//		String name = obj[0].toString();
-//		String number = obj[1].toString();
-//		String sourceString = obj[2].toString();
-//		String destinationString = obj[3].toString();
-//		LocalTime sourceDeparture = (LocalTime) obj[4];
-//		LocalTime destinationArrival = (LocalTime) obj[5];
-//		double amount = (double) obj[6];
-//		FlightBetweenStopsDto dto = new FlightBetweenStopsDto(name, number, sourceString, destinationString, sourceDeparture, destinationArrival, amount);
-//		listDto.add(dto);
-//	}
-//	return listDto;
-//
-
-//List<Object[]> list3 = flightSeatBookingRepository.getSeatAmountInfo(seatId);
-//for(Object[] obj : list3) {
-//	String seatNumber = obj[0].toString();
-//	String classType = obj[1].toString();
-//	double amount = (double) obj[2];
-//	
-//}
