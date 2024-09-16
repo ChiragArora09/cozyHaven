@@ -22,9 +22,6 @@ public class ServiceProviderService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private UserService userService;
-	
-	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	public ServiceProvider addServiceProvider(ServiceProvider serviceProvider) {

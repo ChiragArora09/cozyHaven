@@ -126,7 +126,7 @@ public class FlightController {
 		return flightService.getFlightBetweenStops(flightInputDto.getSource(), flightInputDto.getDestination(), flightInputDto.getClassType());
 	}
 	
-	// MAKING GENERAL BOOKING WITH STATUS PENDING
+	// MAKING GENERAL BOOKING WITH STATUS=PENDING
 	@PostMapping("/booking/{cust_id}/{fid}")
 	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int fid, @RequestBody FlightBooking flightBooking) throws InputValidationException{
 			flightBooking = flightBookingService.addBooking(cust_id, fid, flightBooking);
