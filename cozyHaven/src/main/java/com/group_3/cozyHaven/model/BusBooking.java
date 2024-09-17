@@ -23,6 +23,10 @@ public class BusBooking {
 	
 	private String status;
 	
+	private int sourceStopNumber;
+	
+	private int destinationStopNumber;
+	
 	@ManyToOne
 	private Customer customer;
 
@@ -73,6 +77,22 @@ public class BusBooking {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public int getSourceStopNumber() {
+		return sourceStopNumber;
+	}
+
+	public void setSourceStopNumber(int sourceStopNumber) {
+		this.sourceStopNumber = sourceStopNumber;
+	}
+
+	public int getDestinationStopNumber() {
+		return destinationStopNumber;
+	}
+
+	public void setDestinationStopNumber(int destinationStopNumber) {
+		this.destinationStopNumber = destinationStopNumber;
 	}
 	
 }

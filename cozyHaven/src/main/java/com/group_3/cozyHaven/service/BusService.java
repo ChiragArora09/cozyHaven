@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,10 +70,15 @@ public class BusService {
 			
 			double totalAmount = baseFare+PricePerKm;
 			// (String busName, String busNumber, BusType busType, String busDescription, String source, String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount)
-			BusBetweenStopsDto betweenStopsDto = new BusBetweenStopsDto(sourceInfo[3].toString(), sourceInfo[4].toString(), (BusType)sourceInfo[5], sourceInfo[6].toString(), sourceInfo[7].toString(), destinationInfo[7].toString(), (LocalTime) sourceInfo[0], (LocalTime) destinationInfo[0], distance, totalAmount, (int)sourceInfo[8]);
+			BusBetweenStopsDto betweenStopsDto = new BusBetweenStopsDto(sourceInfo[3].toString(), sourceInfo[4].toString(), (BusType)sourceInfo[5], sourceInfo[6].toString(), sourceInfo[7].toString(), destinationInfo[7].toString(), (LocalTime) sourceInfo[0], (LocalTime) destinationInfo[0], distance, totalAmount, (int)sourceInfo[8], (int)sourceInfo[9], (int)destinationInfo[9]);
 			busBetweenStopsDtos.add(betweenStopsDto);
 		}
-		return busBetweenStopsDtos;
+		
+        List<BusBetweenStopsDto> filteredBusesBySource = busBetweenStopsDtos.stream()
+                .filter(bus -> bus.getSource().equals(source))
+                .collect(Collectors.toList());
+		
+		return filteredBusesBySource;
 		
 	}
 	

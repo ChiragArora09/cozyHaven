@@ -78,7 +78,7 @@ public class SecurityConfig {
 	           // .anyRequest().authenticated()
 	           //.anyRequest().permitAll()
                 
-	            .anyRequest().authenticated()
+//	            .anyRequest().authenticated()
 
 
                 .anyRequest().permitAll()

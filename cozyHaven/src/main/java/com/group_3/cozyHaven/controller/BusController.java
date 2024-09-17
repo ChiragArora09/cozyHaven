@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,18 @@ import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Bus;
 import com.group_3.cozyHaven.model.BusBooking;
+import com.group_3.cozyHaven.model.BusPassenger;
 import com.group_3.cozyHaven.model.BusSeat;
+import com.group_3.cozyHaven.model.BusSeatBooking;
 import com.group_3.cozyHaven.model.BusStop;
-import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.Stop;
 import com.group_3.cozyHaven.service.BusBookingService;
+import com.group_3.cozyHaven.service.BusPassengerService;
+import com.group_3.cozyHaven.service.BusSeatBookingService;
 import com.group_3.cozyHaven.service.BusSeatService;
 import com.group_3.cozyHaven.service.BusService;
 import com.group_3.cozyHaven.service.BusStopService;
 import com.group_3.cozyHaven.service.StopService;
-
 
 @RestController
 @RequestMapping("/bus")
@@ -47,6 +50,12 @@ public class BusController {
 	
 	@Autowired
 	private BusBookingService busBookingService;
+	
+	@Autowired
+	private BusPassengerService busPassengerService;
+	
+	@Autowired
+	private BusSeatBookingService busSeatBookingService;
 	
 	// ADDING A BUS BY SERVICE PROVIDER
 	@PostMapping("/add-bus/{serviceProviderId}")
@@ -103,4 +112,31 @@ public class BusController {
 			busBooking = busBookingService.addBooking(cust_id, busId, busBooking);
 			return ResponseEntity.ok(busBooking); 
 	}
+	
+	// ADDING PASSENGERS
+	@PostMapping("/booking/passengers/{bid}")
+	public ResponseEntity<?> addPassengers(@PathVariable int bid, @RequestBody List<BusPassenger> busPassengers) throws InputValidationException {
+		List<BusPassenger> savedPassengers = new ArrayList<>();
+		
+	    for (BusPassenger passenger : busPassengers) {
+	        BusPassenger savedPassenger = busPassengerService.addPassenger(bid, passenger);
+	        savedPassengers.add(savedPassenger);
+	    }
+	    return ResponseEntity.ok(savedPassengers);	
+	}
+	
+	// BOOKING SEATS
+	@PostMapping("/seat-booking/{bid}")
+	public ResponseEntity<?> confirmSeatBooking(@PathVariable int bid, @RequestBody List<Integer> busSeats) throws InputValidationException, InvalidIdException {
+		List<BusSeatBooking> busSeatBookings = busSeatBookingService.confirmSeatBooking(bid, busSeats);
+		return ResponseEntity.ok(busSeatBookings);
+	}
+	
+	// GETTING AVAILABLE SEATS
+	@GetMapping("/booking/{bookingId}/{busId}/get-seats")
+	// the bookingId is the booking id of the customer who has started the initial process of the booking
+	public List<?> getAvailableSeats(@PathVariable int busId, @PathVariable int bookingId) throws InvalidIdException, InputValidationException {
+		return busSeatService.getAvailableSeats(busId, bookingId);
+	}
+	
 }
