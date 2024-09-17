@@ -28,6 +28,16 @@ public class Booking {
 	@ManyToOne
 	private Room room;
 	
+	private LocalDate bookedDate;
+	
+	public LocalDate getBookedDate() {
+		return bookedDate;
+	}
+
+	public void setBookedDate(LocalDate bookedDate) {
+		this.bookedDate = bookedDate;
+	}
+
 	private LocalDate checkOutDate;
 	
 	private LocalDate checkInDate;

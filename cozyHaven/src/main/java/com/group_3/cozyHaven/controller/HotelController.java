@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group_3.cozyHaven.dto.HotelInputDto;
+import com.group_3.cozyHaven.dto.HotelResultDto;
 import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.Amenities;
@@ -69,4 +71,8 @@ public class HotelController {
 	}
 	
 
+	@GetMapping("/search")
+	public List<HotelResultDto> searchHotels(@RequestBody HotelInputDto hotelInputDto){
+		return hotelService.searchHotels(hotelInputDto.getLocation(),hotelInputDto.getCheckInDate(),hotelInputDto.getCheckOutDate(),hotelInputDto.getNumberGuests());
+	}
 }

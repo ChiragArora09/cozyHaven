@@ -54,9 +54,6 @@ public class RoomService {
 		
 	}
 
-
-
-
 	public Room updateRoom(int roomId, Room room) throws InvalidIdException {
 		Optional<Room> optional=roomRepository.findById(roomId);
 		if(optional.isEmpty())
@@ -97,9 +94,6 @@ public class RoomService {
 		return roomRepository.findByHotelRoomType(hotelId,roomType);
 	}
 
-
-
-
 	public void updateRoomBooking() {
 		LocalDate date=LocalDate.now();
 		
@@ -111,10 +105,7 @@ public class RoomService {
 			 int numberOfRoomsBooked = booking.getNumberOfRooms();
 			 
 			 room.setBookedRooms(room.getBookedRooms() - numberOfRoomsBooked);
-	            room.setTotalRooms(room.getTotalRooms() + numberOfRoomsBooked);
-
-	           
-	            roomRepository.save(room);
+	         roomRepository.save(room);
 	            
 	            booking.setStatus(BookedStatus.CHECKED_OUT);
 	            bookingRepository.save(booking);

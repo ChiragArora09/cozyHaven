@@ -20,4 +20,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     @Query("select r from Room r where r.hotel.id = ?1 and r.roomType = ?2 and (r.totalRooms - r.bookedRooms) > 0")
     List<Room> findByHotelRoomType(int hotelId, RoomType roomType);
+
 }

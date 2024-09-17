@@ -51,27 +51,29 @@ public class SecurityConfig {
 	            
 	            //allow customers to fetch and book hotels rooms
 	            .requestMatchers("/customer/add").permitAll()
+	            .requestMatchers("hotel/search").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/{location}").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/rooms/{hotelId}").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/amenities/{roomId}").hasRole("CUSTOMER")
-	            .requestMatchers("/customer/booking/{customerId}/{roomId}").hasRole("CUSTOMER")
+	         // .requestMatchers("/customer/booking/{customerId}/{roomId}").hasRole("CUSTOMER")
 	            .requestMatchers("/room/{hotelId}/{roomType}").hasRole("CUSTOMER")
 	            .requestMatchers("/booking//room/{roomId}/{customerId}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking/customer/{customerId}").hasAnyRole("CUSTOMER","SERVICE_PROVIDER")
+	            .requestMatchers("/reviews/{customerId}/{hotelId}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking/cancel/{customerId}").hasRole("CUSTOMER")
 	            
-
-	            .anyRequest().authenticated()
-
-	            .requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/service-provider/add").permitAll()
+	          //.requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER")
+	          // .requestMatchers("/service-provider/add").permitAll()
 	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
+	           // .anyRequest().authenticated()
+	           //.anyRequest().permitAll()
+                
 	            .anyRequest().authenticated()
-	            .anyRequest().permitAll()
-
 	        )
 	        .sessionManagement(session -> session
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

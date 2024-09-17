@@ -41,15 +41,4 @@ public ResponseEntity<?> addEmployee(@RequestBody 	Customer customer,MessageDto 
 	
 	}
 	
-	/*@PostMapping("/booking/{customerId}/{roomId}")
-	public ResponseEntity<?> bookRoom(@PathVariable int customerId,@PathVariable int roomId ,@RequestBody Booking booking) {
-		try {
-			Booking booked=bookingService.bookRoom(customerId,roomId,booking);
-			return ResponseEntity.ok(booked);
-		} catch (InvalidIdException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-		
-	}*/
-	
 }

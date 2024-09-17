@@ -42,9 +42,6 @@ public class Room {
 	
 	@OneToMany
 	private List<Image> images;
-	
-	@OneToMany
-	private List<Amenities> amenities;
 
 
 	public int getId() {
@@ -118,24 +115,15 @@ public class Room {
 	public void setImages(List<Image> images) {
 		this.images = images;
 	}
-	
-	
-	
-	public List<Amenities> getAmenities() {
-		return amenities;
-	}
-
-	public void setAmenities(List<Amenities> amenities) {
-		this.amenities = amenities;
-	}
 
 	@Override
 	public String toString() {
 		return "Room [id=" + id + ", capacity=" + capacity + ", price=" + price + ", roomType=" + roomType
 				+ ", bedType=" + bedType + ", totalRooms=" + totalRooms + ", bookedRooms=" + bookedRooms + ", hotel="
-				+ hotel + ", images=" + images + ", amenities=" + amenities + "]";
+				+ hotel + ", images=" + images + "]";
 	}
-
+	
+    
 	
 
 	

@@ -41,7 +41,6 @@ public class Amenities {
 	private BooleanType breafastLunc;
 	
 	@ManyToOne
-	@JoinColumn(name = "room_id")
 	private Room room;
 
 	public int getId() {

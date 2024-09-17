@@ -1,11 +1,15 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.BookingDetailsDto;
 import com.group_3.cozyHaven.enums.BookedStatus;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.exception.RoomUnavailableException;
@@ -59,6 +63,7 @@ public class BookingService {
 		
 		booking.setCustomer(customer);
 	    booking.setRoom(room);
+	    booking.setBookedDate(LocalDate.now());
 		booking.setStatus(BookedStatus.CONFIRMED);
     
 		Booking savedBooking = bookingRepository.save(booking);
@@ -76,14 +81,60 @@ public class BookingService {
 		}
 			savedBooking.setTotalAmount(totalAmount);
 			bookingRepository.save(savedBooking);
-		
-		
 		room.setBookedRooms(room.getBookedRooms() + booking.getNumberOfRooms());
-		room.setTotalRooms(room.getTotalRooms() - booking.getNumberOfRooms());
 		roomRepository.save(room);
 		
 		
-		
 		return savedBooking;
+	}
+
+	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {
+		    List<Booking> bookings = bookingRepository.findAllBooking(customerId);
+	        List<BookingDetailsDto> bookingDetails = new ArrayList<>();
+
+	        for (Booking booking : bookings) {
+	            Room room = booking.getRoom();
+	            String hotelName = room.getHotel().getHotelName();
+	            String location = room.getHotel().getLocation();
+
+	            BookingDetailsDto dto = new BookingDetailsDto(
+	                booking.getBookedDate(),
+	                booking.getCheckOutDate(),
+	                booking.getCheckInDate(),
+	                booking.getNumberOfRooms(),
+	                booking.getNumGuests(),
+	                booking.getTotalAmount(),
+	                booking.getStatus().name(), 
+	                hotelName,
+	                location);
+
+	            bookingDetails.add(dto);
+	        }
+
+	        return bookingDetails;
+	
+		
+	}
+
+	public Booking cancelBooking(int customerId,LocalDate bookedDate) throws InvalidIdException {
+		
+		Optional<Booking> bookingOpt = bookingRepository.findByBookedDate(customerId,bookedDate);
+		if (bookingOpt.isEmpty()) {
+			throw new InvalidIdException("No booking made");
+		}
+		Booking booking = bookingOpt.get();
+		
+		booking.setStatus(BookedStatus.CANCELLED);
+		Booking savedBooking=bookingRepository.save(booking);
+		
+		Optional<Room> roomOpt = roomRepository.findById(booking.getRoom().getId());
+		if (roomOpt.isEmpty()) {
+			throw new InvalidIdException("Room is not booked");
+		}
+		Room room = roomOpt.get();
+		
+		room.setBookedRooms(room.getBookedRooms()-1);
+		roomRepository.save(room);
+		return booking;
 	}
 }
