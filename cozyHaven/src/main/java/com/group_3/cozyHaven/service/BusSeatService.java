@@ -1,12 +1,11 @@
 package com.group_3.cozyHaven.service;
 
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.group_3.cozyHaven.dto.BusBetweenStopsDto;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Bus;
 import com.group_3.cozyHaven.model.BusSeat;
@@ -34,10 +33,5 @@ public class BusSeatService {
 		
 		return optional.get();
  	}
-
-	public List<BusBetweenStopsDto> getBusBetweenStops(String source, String destination) {
-		// TODO Auto-generated method stub
-		return null;
-	} 
 
 }

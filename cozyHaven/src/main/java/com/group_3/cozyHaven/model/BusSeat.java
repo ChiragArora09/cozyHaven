@@ -3,6 +3,8 @@ package com.group_3.cozyHaven.model;
 import com.group_3.cozyHaven.enums.BusSeatType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +19,7 @@ public class BusSeat {
 	
 	private String seatNumber;
 	
+	@Enumerated(EnumType.STRING)
 	private BusSeatType seatType;
 	
 	@ManyToOne
