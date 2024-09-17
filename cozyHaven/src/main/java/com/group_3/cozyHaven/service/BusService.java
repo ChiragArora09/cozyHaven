@@ -40,25 +40,40 @@ public class BusService {
 	}
 
 	public List<BusBetweenStopsDto> getBusBetweenStops(String source, String destination) {
-		List<Object[]> list = busRepository.getBusBetweenStops(source, destination);
-		List<BusBetweenStopsDto> listDto = new ArrayList<>();
-		for(Object[] obj : list) {
-			String busName = obj[0].toString();
-			String busNumber = obj[1].toString();
-			BusType busType = (BusType) obj[2];
-			String busDescription = obj[3].toString();
-			String bsource = obj[4].toString();
-			String bdestination = obj[5].toString();
-			LocalTime sourceTime = (LocalTime) obj[6];
-			LocalTime destinationTime = (LocalTime) obj[7];
-			int distance = (int) obj[8];
-			double amount = 100;
-			
-			BusBetweenStopsDto betweenStopsDto = new BusBetweenStopsDto(busName, busNumber, busType, busDescription, bsource, bdestination, sourceTime, destinationTime, distance, amount);
-			// (String busName, String busNumber, BusType busType, String busDescription, String source, String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount)
-			listDto.add(betweenStopsDto);
+		List<Object[]> list = busRepository.getBusIdsForSourceAndDestination(source, destination);
+		List<Integer> busIds = new ArrayList<>();
+		for(Object[] ids: list) {
+			int id = (int) ids[0];
+			busIds.add(id);
 		}
-		return listDto;
+		
+		// sourceInfo [] and destinationInfo []
+		// bs.arrival, bs.departure, bs.distance, b.name, b.number, b.type, b.description, s.stopName, b.id
+		
+		System.out.println(busIds);
+		List<BusBetweenStopsDto> busBetweenStopsDtos = new ArrayList<>();
+		for (int i=0;i<busIds.size();i++) {
+			List<Object[]> busInfo = busRepository.getBusBetweenStops(busIds.get(i), source, destination);
+			
+			Object[] sourceInfo = busInfo.get(0);
+			Object[] destinationInfo = busInfo.get(1);
+			
+			int PricePerKm = 0;
+			int distance = (int) destinationInfo[2] - (int) sourceInfo[2];
+			if(sourceInfo[5].toString().equals("AC")) {
+				PricePerKm = distance * 8; // 8 Rs. per kilometer
+			} else {
+				PricePerKm = distance * 3; // 3 Rs. per kilometer
+			}
+			double baseFare = 100;
+			
+			double totalAmount = baseFare+PricePerKm;
+			// (String busName, String busNumber, BusType busType, String busDescription, String source, String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount)
+			BusBetweenStopsDto betweenStopsDto = new BusBetweenStopsDto(sourceInfo[3].toString(), sourceInfo[4].toString(), (BusType)sourceInfo[5], sourceInfo[6].toString(), sourceInfo[7].toString(), destinationInfo[7].toString(), (LocalTime) sourceInfo[0], (LocalTime) destinationInfo[0], distance, totalAmount, (int)sourceInfo[8]);
+			busBetweenStopsDtos.add(betweenStopsDto);
+		}
+		return busBetweenStopsDtos;
+		
 	}
 	
 

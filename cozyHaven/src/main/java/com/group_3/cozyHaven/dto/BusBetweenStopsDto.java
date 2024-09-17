@@ -26,9 +26,11 @@ public class BusBetweenStopsDto {
 	
 	private double amount;
 	
+	private int busId;
+	
 
 	public BusBetweenStopsDto(String busName, String busNumber, BusType busType, String busDescription, String source,
-			String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount) {
+			String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount, int busId) {
 		super();
 		this.busName = busName;
 		this.busNumber = busNumber;
@@ -40,8 +42,10 @@ public class BusBetweenStopsDto {
 		this.destinationArrival = destinationArrival;
 		this.distance = distance;
 		this.amount = amount;
+		this.busId = busId;
 	}
 
+	
 	public String getBusName() {
 		return busName;
 	}
@@ -121,5 +125,13 @@ public class BusBetweenStopsDto {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+
+	public int getBusId() {
+		return busId;
+	}
+
+	public void setBusId(int busId) {
+		this.busId = busId;
+	}	
 
 }

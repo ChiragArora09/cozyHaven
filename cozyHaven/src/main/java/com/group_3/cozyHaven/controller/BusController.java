@@ -17,9 +17,12 @@ import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Bus;
+import com.group_3.cozyHaven.model.BusBooking;
 import com.group_3.cozyHaven.model.BusSeat;
 import com.group_3.cozyHaven.model.BusStop;
+import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.Stop;
+import com.group_3.cozyHaven.service.BusBookingService;
 import com.group_3.cozyHaven.service.BusSeatService;
 import com.group_3.cozyHaven.service.BusService;
 import com.group_3.cozyHaven.service.BusStopService;
@@ -41,6 +44,9 @@ public class BusController {
 	
 	@Autowired
 	private BusSeatService busSeatService;
+	
+	@Autowired
+	private BusBookingService busBookingService;
 	
 	// ADDING A BUS BY SERVICE PROVIDER
 	@PostMapping("/add-bus/{serviceProviderId}")
@@ -91,5 +97,10 @@ public class BusController {
 		return busService.getBusBetweenStops(busInputDto.getSource(), busInputDto.getDestination());
 	}
 	
-	// select * from bus b JOIN bus_stop bs ON bs.bus_id=b.id JOIN stop s ON s.id=bs.stop_id where (s.stop_name="Bina" OR s.stop_name="Bhopal") AND b.id = (select b.id from bus_stop bs JOIN bus b ON b.id=bs.bus_id JOIN stop s ON s.id=bs.stop_id WHERE s.stop_name="Bina" AND b.id in (select b.id from bus b JOIN bus_stop bs ON bs.bus_id=b.id JOIN stop s ON s.id=bs.stop_id WHERE s.stop_name="Bhopal") AND bs.stop_number < (select bs.stop_number from bus b JOIN bus_stop bs ON bs.bus_id=b.id JOIN stop s ON s.id=bs.stop_id WHERE s.stop_name="Bhopal"));
+	// Processing the BOOKING
+	@PostMapping("/booking/{cust_id}/{busId}")
+	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
+			busBooking = busBookingService.addBooking(cust_id, busId, busBooking);
+			return ResponseEntity.ok(busBooking); 
+	}
 }
