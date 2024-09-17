@@ -27,6 +27,8 @@ public class BusBooking {
 	
 	private int destinationStopNumber;
 	
+	private double amount;
+	
 	@ManyToOne
 	private Customer customer;
 
@@ -94,5 +96,14 @@ public class BusBooking {
 	public void setDestinationStopNumber(int destinationStopNumber) {
 		this.destinationStopNumber = destinationStopNumber;
 	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+	
 	
 }
