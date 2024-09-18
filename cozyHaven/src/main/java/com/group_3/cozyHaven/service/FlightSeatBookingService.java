@@ -52,7 +52,6 @@ public class FlightSeatBookingService {
 	public List<Payment> calculateTotalAmount(int bid) throws InputValidationException {
 		// getting all the seats booked for a particular booking
 		List<Object[]> list = flightSeatBookingRepository.getBookingSeatsForAParticulaBooking(bid);
-		System.out.println(list);
 		List<Integer> seatIds = new ArrayList<>();
 		for(Object[] obj : list) {
 			int seat = (int) obj[0];

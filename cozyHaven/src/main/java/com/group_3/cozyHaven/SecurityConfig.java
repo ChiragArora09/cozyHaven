@@ -21,8 +21,6 @@ import com.group_3.cozyHaven.service.UserService;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	
-	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
@@ -63,10 +61,6 @@ public class SecurityConfig {
 	            .requestMatchers("/booking/cancel/{customerId}").hasRole("CUSTOMER")
 	            
 
-	          //.requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER")
-	          // .requestMatchers("/service-provider/add").permitAll()
-
-
 
 	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
@@ -74,12 +68,9 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
-
-	           // .anyRequest().authenticated()
-	           //.anyRequest().permitAll()
                 
-//	            .anyRequest().authenticated()
-
+                .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
+                
 
                 .anyRequest().permitAll()
 

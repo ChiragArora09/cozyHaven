@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ import com.group_3.cozyHaven.service.BusSeatService;
 import com.group_3.cozyHaven.service.BusService;
 import com.group_3.cozyHaven.service.BusStopService;
 import com.group_3.cozyHaven.service.StopService;
+import com.group_3.cozyHaven.service.UserService;
+import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
 @RequestMapping("/bus")
@@ -57,10 +60,27 @@ public class BusController {
 	@Autowired
 	private BusSeatBookingService busSeatBookingService;
 	
-	// ADDING A BUS BY SERVICE PROVIDER
-	@PostMapping("/add-bus/{serviceProviderId}")
-	public ResponseEntity<?> addBus(@PathVariable int serviceProviderId, @RequestBody Bus bus, MessageDto dto){
+	@Autowired
+	private GetId getId;
+	
+//	// ADDING A BUS BY SERVICE PROVIDER
+//	@PostMapping("/add-bus/{serviceProviderId}")
+//	public ResponseEntity<?> addBus(@PathVariable int serviceProviderId, @RequestBody Bus bus, MessageDto dto){
+//		try {
+//			bus = busService.addBus(serviceProviderId, bus);
+//			return ResponseEntity.ok(bus);
+//		}catch (InputValidationException e) {
+//			dto.setMsg(e.getMessage());
+//			return ResponseEntity.badRequest().body(dto);	
+//		}
+//	}
+	
+	// ADDING A BUS BY SERVICE PROVIDER 
+	@PostMapping("/add-bus")
+	public ResponseEntity<?> addBus(Principal principal, @RequestBody Bus bus, MessageDto dto){
 		try {
+			String serviceProviderUserName = principal.getName();
+			int serviceProviderId = getId.getIdByUsername(serviceProviderUserName);
 			bus = busService.addBus(serviceProviderId, bus);
 			return ResponseEntity.ok(bus);
 		}catch (InputValidationException e) {
