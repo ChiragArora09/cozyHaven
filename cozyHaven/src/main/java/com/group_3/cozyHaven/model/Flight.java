@@ -17,6 +17,8 @@ public class Flight {
 	
 	private String number;
 	
+	private String description;
+	
 	@ManyToOne
 	private ServiceProvider serviceProvider;
 
@@ -50,6 +52,14 @@ public class Flight {
 
 	public void setServiceProvider(ServiceProvider serviceProvider) {
 		this.serviceProvider = serviceProvider;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }

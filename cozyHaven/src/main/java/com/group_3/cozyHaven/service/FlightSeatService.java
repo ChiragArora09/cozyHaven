@@ -8,7 +8,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.FlightAvailableSeatDto;
+import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
+import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightClass;
 import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.repository.FlightSeatRepository;
@@ -22,21 +25,15 @@ public class FlightSeatService {
 	@Autowired
 	private FlightClassService flightClassService;
 	
+	@Autowired
+	private FlightBookingService flightBookingService;
+	
 	public FlightSeat addFlightSeat(int classId, FlightSeat flightSeat) throws InvalidIdException {
 		FlightClass flightClass =  flightClassService.findById(classId); // finding flight by flightId
 		flightSeat.setFlightClass(flightClass); // inserting id into flightClass
 		return flightSeatRepository.save(flightSeat);
 	}
 
-	public List<?> getAvailableSeats(int fid, LocalDate date) {
-		List<Object[]> list = flightSeatRepository.getAvailableSeats(fid, date);
-		List<String> listDto = new ArrayList<>();
-		for(Object[] obj : list) {
-			String seat = obj[0].toString();
-			listDto.add(seat);
-		}
-		return listDto;
-	}
 
 	public FlightSeat getById(int seatId) throws InvalidIdException {
 			Optional<FlightSeat> optional = flightSeatRepository.findById(seatId);
@@ -44,6 +41,30 @@ public class FlightSeatService {
 				throw new InvalidIdException("Flight Id invalid");
 			
 			return optional.get();
+	}
+
+
+	public List<?> getAvailableSeats(int flightId, int bookingId) throws InputValidationException {
+		FlightBooking flightBooking = flightBookingService.getById(bookingId);
+		
+		int sourceCityNumber = flightBooking.getSourceCityNumber();
+		int destinationCityNumber = flightBooking.getDestinationCityNumber();
+		LocalDate bookingDate = flightBooking.getDate();
+		
+		List<Object[]> list = flightSeatRepository.getAvailableSeats(flightId, sourceCityNumber, destinationCityNumber, bookingDate);
+		
+		List<FlightAvailableSeatDto> flightSeatsList = new ArrayList<>();
+		
+		for(Object[] obj : list) {
+			int seatId = (int) obj[0];
+			String seatNumber = obj[1].toString();
+			String seatType = obj[2].toString();
+			String classType = obj[3].toString();
+			
+			FlightAvailableSeatDto dto = new FlightAvailableSeatDto(seatId, seatNumber, seatType, classType);
+			flightSeatsList.add(dto);
+		}
+		return flightSeatsList;
 	}
 
 

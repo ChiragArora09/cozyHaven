@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,42 +41,82 @@ public class FlightService {
 		return optional.get();
 	}
 
-	public List<FlightBetweenStopsDto> getFlightBetweenStops(String source, String destination, ClassType classType) {
-		
-		List<Object[]> list = flightRepository.getFlightBetweenStops(source, destination, classType);
- 		List<FlightBetweenStopsDto> listDto = new ArrayList<>();
-		for(Object[] obj : list) {
-			String name = obj[0].toString();
-			String number = obj[1].toString();
-			String sourceString = obj[2].toString();
-			String destinationString = obj[3].toString();
-			LocalTime sourceDeparture = (LocalTime) obj[4];
-			LocalTime destinationArrival = (LocalTime) obj[5];
-			double amount = (double) obj[6];
-			FlightBetweenStopsDto dto = new FlightBetweenStopsDto(name, number, sourceString, destinationString, sourceDeparture, destinationArrival, amount);
-			listDto.add(dto);
+	public List<FlightBetweenStopsDto> getFlightsBetweenStops(String source, String destination, ClassType classType) {
+		// grabbing all the ids of flights between desired source and destination
+		List<Object[]> list = flightRepository.getFlightIdsForSourceAndDestination(source, destination, classType);
+		List<Integer> flightIds = new ArrayList<>();
+		for(Object[] ids: list) {
+			int id = (int) ids[0];
+			System.out.println(id);
+			flightIds.add(id);
 		}
-		return listDto;
+		
+		List<FlightBetweenStopsDto> flightBetweenStopsDtoList = new ArrayList<>();
+		
+		for(int i=0;i<flightIds.size();i++) {
+			List<Object[]> flightInfo = flightRepository.getFlightBetweenStops(flightIds.get(i), source, destination);
+			
+			Object[] sourceInfo = flightInfo.get(0); // Fetched 1st row is for source
+			Object[] destinationInfo = flightInfo.get(1); // Fetched 2nd row is for destination
+	/*		
+			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
+			| arrival         | departure       | distance | name   | number      | description                          | city_name | id | stop_number |
+			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
+			| 08:00:00.000000 | 10:00:00.000000 |        0 | Indigo | Indigo 2100 | The fastest and the most comfortable | Delhi     |  1 |           0 |
+			| 13:30:00.000000 | 14:30:00.000000 |      200 | Indigo | Indigo 2100 | The fastest and the most comfortable | Pune      |  1 |           2 |
+			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
+	*/		
+			String flightName = sourceInfo[3].toString();
+			String flightNumber = sourceInfo[4].toString();
+			String flightDescription = sourceInfo[5].toString();
+			String source1 = sourceInfo[6].toString();
+			String destination1 = destinationInfo[6].toString();
+			LocalTime sourceArrival = (LocalTime) sourceInfo[0];
+			LocalTime destinationArrival = (LocalTime) destinationInfo[0];
+			int distance = (int) destinationInfo[2] - (int) sourceInfo[2];
+			int flightId = (int) sourceInfo[7];
+			int sourceStopNumber = (int) sourceInfo[8];
+			int	destinationStopNumber = (int) destinationInfo[8];
+			
+			double fixedFare = 100;
+			double pricePerKm = 5;
+			double amount = distance * pricePerKm;
+			amount+=fixedFare;
+			
+			FlightBetweenStopsDto flightBetweenStopsDto = new FlightBetweenStopsDto(flightName, flightNumber, flightDescription, source1, destination1, sourceArrival, destinationArrival, distance, amount, flightId, sourceStopNumber, destinationStopNumber);
+//			(String flightName, String flightNumber, String flightDescription, String source, String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount, int flightId, int sourceStopNo, int destinationStopNo)
+			flightBetweenStopsDtoList.add(flightBetweenStopsDto);
+		}
+        List<FlightBetweenStopsDto> filteredFlightsBySource = flightBetweenStopsDtoList.stream()
+                .filter(flight -> flight.getSource().equals(source))
+                .collect(Collectors.toList());
+		
+		return filteredFlightsBySource;
 	}
+	// select fc.arrival, fc.departure, fc.distance, f.name, f.number, f.description, c.city_name, f.id, fc.stop_number from flight_city fc JOIN flight f ON fc.flight_id=f.id JOIN city c ON c.id=fc.city_id WHERE f.id=1 AND (c.city_name="Delhi" OR c.city_name="Pune") order by fc.stop_number;
 
 	public List<BookingTicket> getBookingTicket(int bid) {
+	
 		List<Object[]> list = flightRepository.getBookingTicket(bid);
 		List<BookingTicket> listDto = new ArrayList<>();
+
 		for(Object[] obj : list) {
-			String date = obj[0].toString();
-			String source = obj[1].toString();
-			String destination = obj[2].toString();
-			String status = obj[3].toString();
+			String flightName = obj[0].toString();
+			String flightNumber = obj[1].toString();
+			String travellerName = obj[2].toString();
+			int travellerAge = (int) obj[3];
 			String seatNumber = obj[4].toString();
-			String type = obj[5].toString();
-			String flightName = obj[6].toString();
-			String travellerName = obj[7].toString();
-			int age = (int) obj[8];
-			BookingTicket bookingTicket = new BookingTicket(date, source, destination, status, seatNumber, type, flightName, travellerName, age);
+			String seatType = obj[5].toString();
+			String classType = obj[6].toString();
+			String source = obj[7].toString();
+			String destination = obj[8].toString();
+			String date = obj[9].toString();
+			String status = obj[10].toString();
+			
+			BookingTicket bookingTicket = new BookingTicket(date, source, destination, status, seatNumber, classType, flightName, travellerName, travellerAge, flightNumber, seatType);
 			listDto.add(bookingTicket);
-		}
-		return listDto;
+		}	
+		return listDto; 
+
 	}
-	
-	
 }

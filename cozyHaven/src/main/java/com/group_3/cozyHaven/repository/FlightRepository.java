@@ -10,11 +10,14 @@ import com.group_3.cozyHaven.model.Flight;
 
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
-	@Query("SELECT f.name, f.number, r.source, r.destination,fr.sourceDeparture, fr.destinationArrival, fr.amount from FlightRoute fr JOIN fr.route r JOIN fr.flight f WHERE r.source = ?1 AND r.destination = ?2")
-	List<Object[]> getFlightBetweenStops(String source, String destination, ClassType classType);
+	@Query("SELECT DISTINCT(f.id) FROM FlightCity fc JOIN fc.flight f JOIN fc.city c JOIN FlightClass fcc ON fcc.flight.id=f.id WHERE fcc.type=?3 AND c.cityName=?1 AND f.id IN (SELECT f.id FROM FlightCity fc JOIN fc.flight f JOIN fc.city c WHERE c.cityName=?2)")
+	List<Object[]> getFlightIdsForSourceAndDestination(String source, String destination, ClassType classType);
 
-//	@Query(value = "select fb.date, fb.source, fb.destination, fb.status, fs.seat_number, fc.type, f.name, ft.name, ft.age from flight_booking fb JOIN flight_seat_booking fsb ON fsb.flight_booking_id=fb.id JOIN flight_seat fs ON fs.id=fsb.flight_seat_id JOIN flight_class fc ON fc.id=fs.flight_class_id JOIN flight f ON f.id=fc.flight_id JOIN flight_route fr ON fr.flight_id=f.id JOIN flight_traveller ft ON ft.flight_booking_id=fb.id WHERE fb.id=?1 GROUP BY ft.id;", nativeQuery = true)
-	@Query("select fb.date, fb.source, fb.destination, fb.status, fs.seatNumber, fc.type, f.name, ft.name, ft.age FROM FlightSeatBooking fsb JOIN fsb.flightBooking fb JOIN fsb.flightSeat fs JOIN fs.flightClass fc JOIN fc.flight f JOIN FlightTraveller ft ON ft.flightBooking.id=fb.id JOIN FlightRoute fr ON fr.flight.id=f.id JOIN fr.route r WHERE fb.id=?1 GROUP BY ft.id")
+	@Query("SELECT fc.arrival, fc.departure, fc.distance, f.name, f.number, f.description, c.cityName, f.id, fc.stopNumber FROM FlightCity fc JOIN fc.flight f JOIN fc.city c WHERE f.id=?1 AND (c.cityName=?2 OR c.cityName=?3) ORDER BY fc.stopNumber")
+	List<Object[]> getFlightBetweenStops(Integer integer, String source, String destination);
+
+//	@Query(value = "select f.name, f.number, ft.name, ft.age, fs.seat_number, fs.flight_seat_type, fc.type, fb.source, fb.destination, fb.date, fb.status from flight_seat_booking fsb JOIN flight_seat fs ON fs.id=fsb.flight_seat_id JOIN flight_class fc ON fc.id=fs.flight_class_id JOIN flight f ON f.id=fc.flight_id JOIN flight_booking fb ON fb.id=fsb.flight_booking_id JOIN flight_traveller ft ON ft.flight_booking_id=fb.id WHERE fb.id=?1 GROUP BY ft.id;", nativeQuery = true)
+	@Query("SELECT f.name, f.number, ft.name, ft.age, fs.seatNumber, fs.flightSeatType, fc.type, fb.source, fb.destination, fb.date, fb.status FROM FlightSeatBooking fsb JOIN fsb.flightSeat fs JOIN fsb.flightBooking fb JOIN fs.flightClass fc JOIN fc.flight f JOIN FlightTraveller ft ON ft.flightBooking.id=fb.id WHERE fb.id=?1 GROUP BY ft.id")
 	List<Object[]> getBookingTicket(int bid);
 	
 }

@@ -1,6 +1,10 @@
 package com.group_3.cozyHaven.model;
 
+import com.group_3.cozyHaven.enums.FlightSeatType;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +18,9 @@ public class FlightSeat {
 	private int id;
 	
 	private String seatNumber;
+	
+	@Enumerated(EnumType.STRING)
+	private FlightSeatType flightSeatType;
 	
 	@ManyToOne
 	private FlightClass flightClass;

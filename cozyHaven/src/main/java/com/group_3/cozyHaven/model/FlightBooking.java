@@ -23,9 +23,16 @@ public class FlightBooking {
 	
 	private String status;
 	
+	private int sourceCityNumber;
+	
+	private int destinationCityNumber;
+	
+	private double amount;
+	
 	@ManyToOne
 	private Customer customer;
 
+	
 	public int getId() {
 		return id;
 	}
@@ -73,5 +80,31 @@ public class FlightBooking {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	public int getSourceCityNumber() {
+		return sourceCityNumber;
+	}
+
+	public void setSourceCityNumber(int sourceCityNumber) {
+		this.sourceCityNumber = sourceCityNumber;
+	}
+
+	public int getDestinationCityNumber() {
+		return destinationCityNumber;
+	}
+
+	public void setDestinationCityNumber(int destinationCityNumber) {
+		this.destinationCityNumber = destinationCityNumber;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+	
+	
 	
 }

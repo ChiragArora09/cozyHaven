@@ -11,6 +11,7 @@ import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.BusBooking;
 import com.group_3.cozyHaven.model.BusSeat;
 import com.group_3.cozyHaven.model.BusSeatBooking;
+import com.group_3.cozyHaven.model.Payment;
 import com.group_3.cozyHaven.repository.BusBookingRepository;
 import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
 
@@ -53,5 +54,24 @@ public class BusSeatBookingService {
 		
 		return busSeatBookings;
 	}
+
+	public List<Payment> calculateTotalAmount(int bid) {
+		List<Object[]> list = busSeatBookingRepository.getPaymentInfo(bid);
+		List<Payment> paymentList = new ArrayList<>();
+		
+		for(Object[] obj : list) {
+			double amount = (double) obj[0];
+			String seatType = obj[1].toString();
+			double totalAmount = amount;
+			if(seatType.equals("SLEEPER")) {
+				totalAmount*=1.5;
+			}
+			Payment payment = new Payment(amount, seatType, totalAmount);
+			paymentList.add(payment);
+		}
+		return paymentList;
+	}
+	
+	
 	
 }

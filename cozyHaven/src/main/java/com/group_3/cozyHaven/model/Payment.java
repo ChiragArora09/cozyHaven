@@ -14,7 +14,15 @@ public class Payment {
 		this.fclass = fclass;
 		this.totalAmount = totalAmount;
 	}
+	
+	public Payment(double amount, String seat, double totalAmount) {
+		super();
+		this.amount = amount;
+		this.seat = seat;
+		this.totalAmount = totalAmount;
+	}
 
+	
 	public double getAmount() {
 		return amount;
 	}

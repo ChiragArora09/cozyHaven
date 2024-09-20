@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.BusBetweenStopsDto;
 import com.group_3.cozyHaven.dto.BusInputDto;
 import com.group_3.cozyHaven.dto.MessageDto;
@@ -24,6 +25,7 @@ import com.group_3.cozyHaven.model.BusPassenger;
 import com.group_3.cozyHaven.model.BusSeat;
 import com.group_3.cozyHaven.model.BusSeatBooking;
 import com.group_3.cozyHaven.model.BusStop;
+import com.group_3.cozyHaven.model.Payment;
 import com.group_3.cozyHaven.model.Stop;
 import com.group_3.cozyHaven.service.BusBookingService;
 import com.group_3.cozyHaven.service.BusPassengerService;
@@ -32,7 +34,6 @@ import com.group_3.cozyHaven.service.BusSeatService;
 import com.group_3.cozyHaven.service.BusService;
 import com.group_3.cozyHaven.service.BusStopService;
 import com.group_3.cozyHaven.service.StopService;
-import com.group_3.cozyHaven.service.UserService;
 import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
@@ -62,18 +63,6 @@ public class BusController {
 	
 	@Autowired
 	private GetId getId;
-	
-//	// ADDING A BUS BY SERVICE PROVIDER
-//	@PostMapping("/add-bus/{serviceProviderId}")
-//	public ResponseEntity<?> addBus(@PathVariable int serviceProviderId, @RequestBody Bus bus, MessageDto dto){
-//		try {
-//			bus = busService.addBus(serviceProviderId, bus);
-//			return ResponseEntity.ok(bus);
-//		}catch (InputValidationException e) {
-//			dto.setMsg(e.getMessage());
-//			return ResponseEntity.badRequest().body(dto);	
-//		}
-//	}
 	
 	// ADDING A BUS BY SERVICE PROVIDER 
 	@PostMapping("/add-bus")
@@ -126,11 +115,19 @@ public class BusController {
 		return busService.getBusBetweenStops(busInputDto.getSource(), busInputDto.getDestination());
 	}
 	
+	
+//	@PostMapping("/booking/{cust_id}/{busId}")
+//	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
+//			busBooking = busBookingService.addBooking(cust_id, busId, busBooking);
+//			return ResponseEntity.ok(busBooking); 
+//	}
 	// Processing the BOOKING
-	@PostMapping("/booking/{cust_id}/{busId}")
-	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
-			busBooking = busBookingService.addBooking(cust_id, busId, busBooking);
-			return ResponseEntity.ok(busBooking); 
+	@PostMapping("/booking/{busId}")
+	public ResponseEntity<?> addBooking(Principal principal, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
+		String CustomerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(CustomerUsername);
+		busBooking = busBookingService.addBooking(customerId, busId, busBooking);
+		return ResponseEntity.ok(busBooking); 
 	}
 	
 	// ADDING PASSENGERS
@@ -154,9 +151,22 @@ public class BusController {
 	
 	// GETTING AVAILABLE SEATS
 	@GetMapping("/booking/{bookingId}/{busId}/get-seats")
-	// the bookingId is the booking id of the customer who has started the initial process of the booking
+	// the bookingId is the booking id of the booking of customer who has started the initial process of the booking
 	public List<?> getAvailableSeats(@PathVariable int busId, @PathVariable int bookingId) throws InvalidIdException, InputValidationException {
 		return busSeatService.getAvailableSeats(busId, bookingId);
+	}
+	
+	// PAYMENT INFO
+	@GetMapping("/{bid}/payment")
+	public List<Payment> totalAmountCalculation(@PathVariable int bid) throws InputValidationException {
+		List<Payment> list = busSeatBookingService.calculateTotalAmount(bid);
+		return list;
+	}
+	
+	// GETTING BOOKING TICKET
+	@GetMapping("/booking-ticket/{bid}")
+	public List<BookingTicket> getBookingReceipt(@PathVariable int bid) {
+		return busService.getBookingTicket(bid);
 	}
 	
 }

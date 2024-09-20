@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.BusBetweenStopsDto;
 import com.group_3.cozyHaven.enums.BusType;
 import com.group_3.cozyHaven.exception.InputValidationException;
@@ -51,7 +52,6 @@ public class BusService {
 		// sourceInfo [] and destinationInfo []
 		// bs.arrival, bs.departure, bs.distance, b.name, b.number, b.type, b.description, s.stopName, b.id
 		
-		System.out.println(busIds);
 		List<BusBetweenStopsDto> busBetweenStopsDtos = new ArrayList<>();
 		for (int i=0;i<busIds.size();i++) {
 			List<Object[]> busInfo = busRepository.getBusBetweenStops(busIds.get(i), source, destination);
@@ -81,6 +81,29 @@ public class BusService {
 		return filteredBusesBySource;
 		
 	}
-	
 
+	public List<BookingTicket> getBookingTicket(int bid) {
+		List<Object[]> list = busRepository.getBookingTicket(bid);
+		List<BookingTicket> listDto = new ArrayList<>();
+
+		for(Object[] obj : list) {
+			String busName = obj[0].toString();
+			String busNumber = obj[1].toString();
+			String busType = obj[2].toString();
+			String passengerName = obj[3].toString();
+			int passengerAge = (int)obj[4];
+			String seatNumber = obj[5].toString();
+			String seatType = obj[6].toString();
+			String date = obj[7].toString();
+			String source = obj[8].toString();
+			String destination = obj[9].toString();
+			String status = obj[10].toString();
+			
+			BookingTicket bookingTicket = new BookingTicket(date, source, destination, status, seatNumber, busType, busName, passengerName, passengerAge, busNumber, seatType);
+			listDto.add(bookingTicket);
+		}	
+		return listDto;
+	}
+
+	
 }

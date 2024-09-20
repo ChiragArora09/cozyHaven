@@ -1,45 +1,43 @@
 package com.group_3.cozyHaven.dto;
 
-import java.time.LocalDate;
-
+// REUSING THIS SAME MODEL FOR BUS TICKET AS WELL
 public class BookingTicket {
 	private String bdate;
 	private String source;
 	private String destination;
-	private String Status;
+	private String status;
 	private String seatNumber;
-	private String type;
-	private String flightName;
+	private String type; // flight type or bus type
+	private String flightName; // busName in case of bus-ticket
 	private String travellerName;
 	private int age;
-	
+	private String vehicleNumber;
+	private String seatType;
+
 
 	public BookingTicket(String bdate, String source, String destination, String status, String seatNumber, String type,
-			String flightName, String travellerName, int age) {
+			String flightName, String travellerName, int age, String vehicleNumber, String seatType) {
 		super();
 		this.bdate = bdate;
 		this.source = source;
 		this.destination = destination;
-		Status = status;
+		this.status = status;
 		this.seatNumber = seatNumber;
 		this.type = type;
 		this.flightName = flightName;
 		this.travellerName = travellerName;
 		this.age = age;
+		this.vehicleNumber = vehicleNumber;
+		this.seatType = seatType;
 	}
 	
-
 	public String getBdate() {
 		return bdate;
 	}
 
-
-
 	public void setBdate(String bdate) {
 		this.bdate = bdate;
 	}
-
-
 
 	public String getSource() {
 		return source;
@@ -58,11 +56,11 @@ public class BookingTicket {
 	}
 
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 
 	public String getSeatNumber() {
@@ -104,5 +102,22 @@ public class BookingTicket {
 	public void setAge(int age) {
 		this.age = age;
 	}
+
+	public String getVehicleNumber() {
+		return vehicleNumber;
+	}
+
+	public void setVehicleNumber(String vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+
+	public String getSeatType() {
+		return seatType;
+	}
+
+	public void setSeatType(String seatType) {
+		this.seatType = seatType;
+	}
+	
 	
 }
