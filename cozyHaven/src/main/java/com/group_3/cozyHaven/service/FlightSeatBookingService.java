@@ -7,12 +7,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.FlightPayment;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.model.FlightSeatBooking;
-import com.group_3.cozyHaven.model.Payment;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
 import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
 
@@ -30,66 +30,65 @@ public class FlightSeatBookingService {
 	
 	@Autowired
 	private FlightBookingRepository flightBookingRepository;
-	
-	
-	public FlightSeatBooking confirmBooking(int bid, int flightSeat) throws InputValidationException, InvalidIdException {
-		FlightBooking fBooking = flightBookingService.getById(bid);
-		FlightSeat fSeat = flightSeatService.getById(flightSeat);
-		
-		FlightSeatBooking flightSeatBooking = new FlightSeatBooking();		
-		flightSeatBooking.setFlightBooking(fBooking);
-		flightSeatBooking.setFlightSeat(fSeat);
-		
-		flightSeatBookingRepository.save(flightSeatBooking);
 
-		FlightBooking booking = flightBookingService.getById(bid);
-		booking.setStatus("Confirm");
-		flightBookingRepository.save(booking);
+
+	public List<FlightSeatBooking> confirmSeatBooking(int bid, List<Integer> flightSeats) throws InvalidIdException, InputValidationException {
+		// list to store all the saved seat-bookings from the array
+		List<FlightSeatBooking> flightSeatBookings = new ArrayList<>();
 		
-		return flightSeatBooking;
+		FlightBooking flightBooking = flightBookingService.getById(bid); // getting booking object
+		
+		// traverse each seat
+		for(int seatId : flightSeats) {
+			FlightSeatBooking flightSeatBooking = new FlightSeatBooking(); // new object	
+			
+			FlightSeat flightSeat = flightSeatService.getById(seatId); // getting seat object
+			
+			flightSeatBooking.setFlightBooking(flightBooking); // set booking in BusSeatBooking model
+			flightSeatBooking.setFlightSeat(flightSeat); // set seat in BusSeatBooking model
+			
+			flightSeatBookings.add(flightSeatBooking);
+			
+			flightSeatBookingRepository.save(flightSeatBooking);
+		}
+		flightBooking.setStatus("Confirmed");
+		flightBookingRepository.save(flightBooking);
+		
+		return flightSeatBookings;
 	}
 
-	public List<Payment> calculateTotalAmount(int bid) throws InputValidationException {
-		// getting all the seats booked for a particular booking
-		List<Object[]> list = flightSeatBookingRepository.getBookingSeatsForAParticulaBooking(bid);
-		System.out.println(list);
-		List<Integer> seatIds = new ArrayList<>();
-		for(Object[] obj : list) {
-			int seat = (int) obj[0];
-			System.out.println(seat);
-			seatIds.add(seat);
-		}
-		
-		List<Payment> paymentInfo = new ArrayList<>();
-		
-		for (int i=0;i<seatIds.size();i++) {
-			int seatId = seatIds.get(i);
 
-			List<Object[]> list3 = flightSeatBookingRepository.getSeatAmountInfo(seatId);
-			for(Object[] obj : list3) {
-				String seatNumber = obj[0].toString();
-				String classType = obj[1].toString();
-				double amount = (double) obj[2];
-				
-				double totalAmount = amount;
-				
-				if(classType == "PREMIUM_ECONOMY") {
-					totalAmount=totalAmount + (totalAmount*1.2);
-				}else if(classType == "BUSINESS") {
-					totalAmount=totalAmount + (totalAmount*1.5);
-				}else if(classType == "FIRST_CLASS") {
-					totalAmount=totalAmount + (totalAmount*2.0);
-				}
-				
-				Payment payment = new Payment(amount, seatNumber, classType, totalAmount);
-				paymentInfo.add(payment);
-				
+	public List<FlightPayment> calculateTotalAmount(int bid) {
+		List<Object[]> list = flightSeatBookingRepository.getPaymentInfo(bid);
+		List<FlightPayment> paymentList = new ArrayList<>();
+		
+		for(Object[] obj : list) {
+			double amount = (double) obj[0];
+			String seatType = obj[1].toString();
+			String classType = obj[2].toString();
+			double totalAmount = amount;
+			
+			// CHECKING THE CLASS TYPE FOR ADDITIONAL COSTS
+			if(classType.equals("PREMIUM_ECONOMY")) {
+				totalAmount = amount*1.2;
+			} else if(classType.equals("BUSINESS")){
+				totalAmount = amount*2.0;
+			} else if(classType.equals("FIRST_CLASS")){
+				totalAmount = amount*3.0;
 			}
 			
+			// CHECKING THE SEAT TYPE FOR ADDITIONAL COSTS
+			if(seatType.equals("Aisle_Seat")) {
+				totalAmount = totalAmount*1.1;
+			} else if(seatType.equals("Window_Seat")){
+				totalAmount = totalAmount*1.05;
+			}
+		
+			FlightPayment payment = new FlightPayment(amount, seatType, classType, totalAmount);
+			paymentList.add(payment);
 		}
-		
-		return paymentInfo;
-		
+			return paymentList;
 	}
+
 
 }

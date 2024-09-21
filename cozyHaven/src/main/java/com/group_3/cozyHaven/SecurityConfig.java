@@ -21,8 +21,6 @@ import com.group_3.cozyHaven.service.UserService;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	
-	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
@@ -65,6 +63,7 @@ public class SecurityConfig {
 	            .requestMatchers("/package/search").hasRole("CUSTOMER")
                 .requestMatchers("/package/detailsView/{holidayPackageId}").hasRole("CUSTOMER")
 	            
+
                 .requestMatchers("/admin/add").permitAll()
                 .requestMatchers("/package/hotel/add").hasRole("ADMIN")
                 .requestMatchers("/package/holiday/add").hasRole("ADMIN")
@@ -81,9 +80,18 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
 
-                
-	            .anyRequest().authenticated()
 
+
+	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
+//                .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
+//	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
+//	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
+//	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
+//                .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
+                
+                .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
+
+                
 
 	        )
 	        .sessionManagement(session -> session

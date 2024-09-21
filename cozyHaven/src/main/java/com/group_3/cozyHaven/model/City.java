@@ -6,13 +6,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Stop { // MODEL FOR STOPS WHERE BUS WILL GO
-	
+public class City { // MODEL FOR CITIES WHERE FLIGHTS WILL GO
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	private String stopName;
+	private String cityName;
 
 	public int getId() {
 		return id;
@@ -22,12 +22,12 @@ public class Stop { // MODEL FOR STOPS WHERE BUS WILL GO
 		this.id = id;
 	}
 
-	public String getStopName() {
-		return stopName;
+	public String getCityName() {
+		return cityName;
 	}
 
-	public void setStopName(String stopName) {
-		this.stopName = stopName;
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
 	}
-
+	
 }
