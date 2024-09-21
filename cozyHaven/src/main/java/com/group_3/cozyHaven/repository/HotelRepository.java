@@ -16,20 +16,11 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer>{
 	@Query("SELECT h from Hotel h where h.location=?1")
 	List<Hotel> findByLocation(String location);
 
-	@Query(value = "SELECT hr.id AS room_id, hr.bed_type, " +
-            "       hr.room_type, " +
-            "       hr.price, " +
-            "       (hr.total_rooms - COALESCE(SUM(br.number_of_rooms), 0)) AS available_rooms, " +
-            "       h.hotel_name, " +
-            "       h.location " +
-            "FROM hotel_room_type hr " +
-            "JOIN hotel h ON hr.hotel_id = h.id " +
-            "LEFT JOIN booking_room br ON hr.id = br.room_id " +
-            "       AND br.status = 'CONFIRMED' " +
-            "       AND NOT (br.check_in_date >= :checkOutDate OR br.check_out_date <= :checkInDate) " + // Check for overlapping bookings
-            "WHERE h.location = :location " +
-            "GROUP BY hr.id, hr.bed_type, hr.room_type, hr.price, h.hotel_name, h.location " +
-            "HAVING available_rooms >= :numberGuests",
-    nativeQuery = true)
-	List<Object[]> findAvailableHotels(String location, LocalDate checkInDate, LocalDate checkOutDate,int numberGuests);
+	@Query("select hr.id,hr.roomType,hr.price,h.hotelName,h.location,h.id from Room hr join hr.hotel h where h.location=?1 and hr.bookedRooms < hr.totalRooms")
+	List<Object[]> findAvailableHotels(String location);
+
 }
+
+
+// select h.id,h.location,h.hotel_name,hr.room_type,hr.id,hr.price from hotel h join hotel_room_type hr on hr.hotel_id=h.id left join booking_room br on br.room_id=hr.id
+// where hr.booked_rooms < hr.total_rooms;

@@ -35,14 +35,11 @@ public class Room {
 	
 	private int totalRooms;
 	
-	private int bookedRooms;
+	private int bookedRooms; 
 	
 	@ManyToOne
 	private Hotel hotel;
 	
-	@OneToMany
-	private List<Image> images;
-
 
 	public int getId() {
 		return id;
@@ -108,19 +105,11 @@ public class Room {
 		this.bookedRooms = bookedRooms;
 	}
 
-	public List<Image> getImages() {
-		return images;
-	}
-
-	public void setImages(List<Image> images) {
-		this.images = images;
-	}
-
 	@Override
 	public String toString() {
 		return "Room [id=" + id + ", capacity=" + capacity + ", price=" + price + ", roomType=" + roomType
 				+ ", bedType=" + bedType + ", totalRooms=" + totalRooms + ", bookedRooms=" + bookedRooms + ", hotel="
-				+ hotel + ", images=" + images + "]";
+				+ hotel + "]";
 	}
 	
     

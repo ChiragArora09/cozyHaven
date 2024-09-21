@@ -9,22 +9,20 @@ import com.group_3.cozyHaven.enums.RoomType;
 public class HotelResultDto {
 	
 	 private int roomId;
-	    private String bedType;
 	    private String roomType;
-	    private double price;
-	    private int availableRooms;
+	    private String price;
 	    private String hotelName;
 	    private String hotelLocation;
-		public HotelResultDto(int roomId, String bedType, String roomType, double price, int availableRooms,
-				String hotelName, String hotelLocation) {
+        private int hotelId;
+		public HotelResultDto(int roomId, String roomType, String price, String hotelName, String hotelLocation,
+				int hotelId) {
 			super();
 			this.roomId = roomId;
-			this.bedType = bedType;
 			this.roomType = roomType;
 			this.price = price;
-			this.availableRooms = availableRooms;
 			this.hotelName = hotelName;
 			this.hotelLocation = hotelLocation;
+			this.hotelId = hotelId;
 		}
 		public int getRoomId() {
 			return roomId;
@@ -32,29 +30,17 @@ public class HotelResultDto {
 		public void setRoomId(int roomId) {
 			this.roomId = roomId;
 		}
-		public String getBedType() {
-			return bedType;
-		}
-		public void setBedType(String bedType) {
-			this.bedType = bedType;
-		}
 		public String getRoomType() {
 			return roomType;
 		}
 		public void setRoomType(String roomType) {
 			this.roomType = roomType;
 		}
-		public double getPrice() {
+		public String getPrice() {
 			return price;
 		}
-		public void setPrice(double price) {
+		public void setPrice(String price) {
 			this.price = price;
-		}
-		public int getAvailableRooms() {
-			return availableRooms;
-		}
-		public void setAvailableRooms(int availableRooms) {
-			this.availableRooms = availableRooms;
 		}
 		public String getHotelName() {
 			return hotelName;
@@ -68,7 +54,13 @@ public class HotelResultDto {
 		public void setHotelLocation(String hotelLocation) {
 			this.hotelLocation = hotelLocation;
 		}
+		public int getHotelId() {
+			return hotelId;
+		}
+		public void setHotelId(int hotelId) {
+			this.hotelId = hotelId;
+		}
 		
-	    
+	
 	    
 }

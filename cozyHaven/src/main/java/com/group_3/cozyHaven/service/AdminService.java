@@ -52,11 +52,6 @@ public class AdminService {
 			logger.error("Admin name given is NULL or blank, InputValidationException Thrown");
 			throw new InputValidationException("Field admin.name cannot be blank ");
 		}
-
-		if(admin.getPassword() == null || admin.getPassword().equals("")) {
-			logger.error("Admin contact given is NULL or blank, InputValidationException Thrown");
-			throw new InputValidationException("Field admin.contact cannot be blank ");
-		}
 		
 	}
 

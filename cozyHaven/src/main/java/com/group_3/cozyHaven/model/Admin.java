@@ -21,7 +21,11 @@ public class Admin {
 	
 	private String email;
 	
-	private String password;
+	private String contactNumber;
+	
+	private String address;
+	
+	private String profilePicture;
 	
 	@OneToOne
 	private User user;
@@ -50,12 +54,28 @@ public class Admin {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getContactNumber() {
+		return contactNumber;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
 	}
 
 	public User getUser() {
@@ -64,12 +84,6 @@ public class Admin {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	@Override
-	public String toString() {
-		return "Admin [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", user=" + user
-				+ "]";
 	}
 	
 	

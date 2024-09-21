@@ -1,6 +1,5 @@
 package com.group_3.cozyHaven.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,7 @@ public class HotelService {
 	@Autowired
 	private HotelRepository hotelRepository;
 	
+	
 	public Hotel addHotel(int serviceProviderId, Hotel hotel) throws InputValidationException {
 		
 		ServiceProvider serviceProvider=serviceProviderService.getById(serviceProviderId);
@@ -40,21 +40,18 @@ public class HotelService {
 	}
 
 
-	public List<HotelResultDto> searchHotels(String location, LocalDate checkInDate, LocalDate checkOutDate,int numberGuests) {
-		List<Object[]> results = hotelRepository.findAvailableHotels(location,checkInDate,checkOutDate,numberGuests);
+	public List<HotelResultDto> searchHotels(String location) {
+		List<Object[]> results = hotelRepository.findAvailableHotels(location);
         List<HotelResultDto> listDto = new ArrayList<>();
        
-        for (Object[] obj : results) {
+               for (Object[] obj : results) {
         	   int roomId = (int) obj[0]; 
-        	    String bedType =  obj[1].toString();
-        	    String roomType =obj[2].toString();
-      	        double price =  (double)obj[3];
-      	      BigDecimal availableRoomsDecimal = (BigDecimal) obj[4]; 
-      	      int availableRooms = availableRoomsDecimal.intValue(); 
-               String hotelName =  obj[5].toString(); 
-        	    String hotelLocation = obj[6].toString();  
-        	    
-        	    HotelResultDto dto = new HotelResultDto(roomId, bedType, roomType, price, availableRooms, hotelName, hotelLocation);
+        	    String roomType =obj[1].toString();
+      	       String price =  obj[2].toString();
+                String hotelName =  obj[3].toString(); 
+        	    String hotelLocation = obj[4].toString();  
+        	    int hotelId=(int)obj[5];
+        	    HotelResultDto dto = new HotelResultDto(roomId, roomType, price,hotelName, hotelLocation,hotelId);
         	    listDto.add(dto);  
 	}
         return listDto;

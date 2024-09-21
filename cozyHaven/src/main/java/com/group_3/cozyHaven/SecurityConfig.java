@@ -51,7 +51,7 @@ public class SecurityConfig {
 	            
 	            //allow customers to fetch and book hotels rooms
 	            .requestMatchers("/customer/add").permitAll()
-	            .requestMatchers("hotel/search").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/search/{location}").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/{location}").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/rooms/{hotelId}").hasRole("CUSTOMER")
 	            .requestMatchers("hotel/amenities/{roomId}").hasRole("CUSTOMER")
@@ -61,13 +61,19 @@ public class SecurityConfig {
 	            .requestMatchers("/booking/customer/{customerId}").hasAnyRole("CUSTOMER","SERVICE_PROVIDER")
 	            .requestMatchers("/reviews/{customerId}/{hotelId}").hasRole("CUSTOMER")
 	            .requestMatchers("/booking/cancel/{customerId}").hasRole("CUSTOMER")
+	            .requestMatchers("amenities/{roomId}").hasRole("CUSTOMER")
+	            .requestMatchers("/package/search").hasRole("CUSTOMER")
+                .requestMatchers("/package/detailsView/{holidayPackageId}").hasRole("CUSTOMER")
 	            
-
-	          //.requestMatchers("/service-provider/hello").hasRole("SERVICE_PROVIDER")
-	          // .requestMatchers("/service-provider/add").permitAll()
-
-
-
+                .requestMatchers("/admin/add").permitAll()
+                .requestMatchers("/package/hotel/add").hasRole("ADMIN")
+                .requestMatchers("/package/holiday/add").hasRole("ADMIN")
+                .requestMatchers("/package/add/{holidayPackageId}").hasRole("ADMIN")
+                .requestMatchers("/package/add/activity/{dayId}").hasRole("ADMIN")
+                .requestMatchers("/package/add/extra/{holidayPackageId}").hasRole("ADMIN")
+                .requestMatchers("/package/vehicle").hasRole("ADMIN")
+                .requestMatchers("/package/holiday/vehicle/{holidayPackageId}/{packageVehicleId}").hasRole("ADMIN")
+               
 	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
@@ -75,13 +81,8 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
 
-	           // .anyRequest().authenticated()
-	           //.anyRequest().permitAll()
                 
 	            .anyRequest().authenticated()
-
-
-                .anyRequest().permitAll()
 
 
 	        )

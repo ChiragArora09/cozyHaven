@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -77,9 +78,10 @@ public class RoomService {
 	
 	}
 
-	public List<Amenities> showAmenities(int roomId) {
+	/*public List<Amenities> showAmenities(int roomId) {
 		return amenitiesRepository.findByRoomId(roomId);
 	}
+	*/
 	
 	public Room getById(int roomId) throws InvalidIdException {
 		Optional<Room> optional=roomRepository.findById(roomId);
@@ -94,8 +96,9 @@ public class RoomService {
 		return roomRepository.findByHotelRoomType(hotelId,roomType);
 	}
 
-	public void updateRoomBooking() {
+	public void updateRoomBooking(String name) {
 		LocalDate date=LocalDate.now();
+		
 		
 		List<Booking> bookings=bookingRepository.findByCheckOutDate(date);
 		

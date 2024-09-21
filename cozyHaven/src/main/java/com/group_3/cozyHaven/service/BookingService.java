@@ -49,6 +49,7 @@ public class BookingService {
 		}
 		Room room = roomOpt.get();
 		
+		if(booking.getStatus()==BookedStatus.CANCELLED || booking.getStatus()==BookedStatus.CHECKED_OUT) {
 		List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(
 		        roomId, booking.getCheckInDate(), booking.getCheckOutDate()
 		    );
@@ -60,7 +61,7 @@ public class BookingService {
 		if (booking.getNumberOfRooms() > available || available<=0) {
 			throw new RoomUnavailableException("Not enough room available");
 		}
-		
+		}
 		booking.setCustomer(customer);
 	    booking.setRoom(room);
 	    booking.setBookedDate(LocalDate.now());
@@ -83,10 +84,11 @@ public class BookingService {
 			bookingRepository.save(savedBooking);
 		room.setBookedRooms(room.getBookedRooms() + booking.getNumberOfRooms());
 		roomRepository.save(room);
-		
+			
 		
 		return savedBooking;
 	}
+	
 
 	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {
 		    List<Booking> bookings = bookingRepository.findAllBooking(customerId);

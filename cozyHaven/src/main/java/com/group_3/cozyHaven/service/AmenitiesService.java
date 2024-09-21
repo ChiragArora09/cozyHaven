@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class AmenitiesService {
 		
 		
 		
+	}
+
+	public List<Amenities> getAmeitiesByRoom(int roomId) {
+		
+		return amenitiesRepository.findByRoomId(roomId);
 	}
 
 }

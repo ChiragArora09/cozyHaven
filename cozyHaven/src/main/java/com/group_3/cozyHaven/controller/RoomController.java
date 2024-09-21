@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,9 @@ public class RoomController {
 	}
 	
 	@GetMapping("/updateAvailability")
-	public void updateRoomBooking(){
-		roomService.updateRoomBooking();
+	public void updateRoomBooking(Principal principal){
+		String name=principal.getName();
+		roomService.updateRoomBooking(name);
 	}
 	
 }

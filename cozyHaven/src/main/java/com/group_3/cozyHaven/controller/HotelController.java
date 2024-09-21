@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,24 +37,27 @@ public class HotelController {
 	@Autowired
 	private CustomerService customerService;
 	
-	@PostMapping("/add/{serviceProviderId}")
+    @PostMapping("/add/{serviceProviderId}")
 	public ResponseEntity<?> addHotel(@PathVariable int serviceProviderId, @RequestBody Hotel hotel) {
 	    MessageDto dto = new MessageDto();
 	    try {
 	        Hotel addedHotel = hotelService.addHotel(serviceProviderId, hotel);
 	        return ResponseEntity.ok(addedHotel);
-	    } catch (InputValidationException e) {
+	        }
+	    catch (InputValidationException e) {
 	        dto.setMsg(e.getMessage());
-	        return ResponseEntity.badRequest().body(dto);
+	       return ResponseEntity.badRequest().body(dto);
 	    }
-	}
+	}	
+	
+	
 
-	@GetMapping("{location}")
+   /*@GetMapping("{location}")
 	public List<Hotel> searchHotel(@PathVariable String location) {
 		
 		return hotelService.searchHotelByLocation(location);
 		
-	}
+	}*/
 	
 	@GetMapping("/rooms/{hotelId}")
 	public ResponseEntity<?> searchRooms(@PathVariable int hotelId){
@@ -64,15 +68,15 @@ public class HotelController {
 		
 	}
 	
-	@GetMapping("/amenities/{roomId}")
+	/*@GetMapping("/amenities/{roomId}")
 	public ResponseEntity<?> showAmenities(@PathVariable int roomId){
 		List<Amenities> amenities=roomService.showAmenities(roomId);
 		return ResponseEntity.ok(amenities);
-	}
+	}*/
 	
 
-	@GetMapping("/search")
-	public List<HotelResultDto> searchHotels(@RequestBody HotelInputDto hotelInputDto){
-		return hotelService.searchHotels(hotelInputDto.getLocation(),hotelInputDto.getCheckInDate(),hotelInputDto.getCheckOutDate(),hotelInputDto.getNumberGuests());
+	@GetMapping("/search/{location}")
+	public List<HotelResultDto> searchHotels(@PathVariable String location){
+		return hotelService.searchHotels(location);
 	}
 }
