@@ -130,6 +130,7 @@ public class BusController {
 		return ResponseEntity.ok(busBooking); 
 	}
 	
+	
 	// ADDING PASSENGERS
 	@PostMapping("/booking/passengers/{bid}")
 	public ResponseEntity<?> addPassengers(@PathVariable int bid, @RequestBody List<BusPassenger> busPassengers) throws InputValidationException {
