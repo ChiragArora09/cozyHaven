@@ -8,8 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.group_3.cozyHaven.dto.VehicleBookingDetails;
+import com.group_3.cozyHaven.exception.InputValidationException;
+import com.group_3.cozyHaven.model.BusBooking;
+import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.repository.BusBookingRepository;
+import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
+import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
 
 @Service
 public class CustomerBookingService {
@@ -19,12 +24,24 @@ public class CustomerBookingService {
 	
 	@Autowired
 	private FlightBookingRepository flightBookingRepository;	
+	
+	@Autowired
+	private BusBookingService busBookingService;
+	
+	@Autowired
+	private FlightBookingService flightBookingService;
+	
+	@Autowired
+	private BusSeatBookingRepository busSeatBookingRepository;
+	
+	@Autowired
+	private FlightSeatBookingRepository flightSeatBookingRepository;
 
 	public List<?> getMyBookings(int customerId, String bookingType, String bookingPeriod) {
-		System.out.println(bookingPeriod);
-		System.out.println(bookingType);
+//		System.out.println(bookingPeriod);
+//		System.out.println(bookingType);
 		if(bookingType.equals("Flight")){
-			System.out.println("In flight");
+		//	System.out.println("In flight");
 			List<Object[]> list = flightBookingRepository.getBookings(customerId);
 			List<VehicleBookingDetails> flightBookingDetailsList = new ArrayList<>();
 			for(Object[] obj : list) {
@@ -90,6 +107,20 @@ public class CustomerBookingService {
 		}
 		
 	}
-	
+
+	public Object cancelBooking(String bookingType, int bid, int customerId) throws InputValidationException {
+		if(bookingType.equals("Bus")) {
+			BusBooking busBooking = busBookingService.getById(bid);
+			busBooking.setStatus("Cancelled");
+			return busSeatBookingRepository.deleteSeats(bid);
+		} else if(bookingType.equals("Flight")) {
+			FlightBooking flightBooking = flightBookingService.getById(bid);
+			flightBooking.setStatus("Cancelled");
+			return flightSeatBookingRepository.deleteSeats(bid);
+		}
+		
+		return null;
+	}
+
 
 }

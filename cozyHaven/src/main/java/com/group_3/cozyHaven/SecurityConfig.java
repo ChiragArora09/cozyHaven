@@ -90,6 +90,8 @@ public class SecurityConfig {
 //                .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
                 
                 .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
+                
+                .requestMatchers("/my-bookings/{bookingType}/upcoming/{bid}/delete").hasRole("CUSTOMER")
 
                 
 
