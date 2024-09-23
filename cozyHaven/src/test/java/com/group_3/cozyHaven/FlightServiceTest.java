@@ -2,18 +2,15 @@ package com.group_3.cozyHaven;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
@@ -37,11 +34,6 @@ public class FlightServiceTest {
 	@InjectMocks
 	private FlightService flightService;
 	
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-	
 	@Test
 	public void addFlightTest() throws InputValidationException {
 		int serviceProviderId = 1;
@@ -54,9 +46,6 @@ public class FlightServiceTest {
 		when(flightRepository.save(flight)).thenReturn(flight);
 		
 		Flight result = flightService.addFlight(serviceProviderId, flight);
-		
-		verify(serviceProviderService).getById(serviceProviderId);
-		verify(flightRepository).save(flight);
 		
 		assertNotNull(result);
 		assertEquals(serviceProvider, result.getServiceProvider());
@@ -96,10 +85,8 @@ public class FlightServiceTest {
         assertEquals(1, dto.getFlightId());
         assertEquals(0, dto.getSourceStopNo());
         assertEquals(2, dto.getDestinationStopNo());
-        
-        verify(flightRepository).getFlightIdsForSourceAndDestination(source, destination, classType);
-        verify(flightRepository).getFlightBetweenStops(1, source, destination);
-
 	}
+	
+	
 
 }

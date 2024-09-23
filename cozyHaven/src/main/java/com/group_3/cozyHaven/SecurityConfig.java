@@ -92,6 +92,7 @@ public class SecurityConfig {
                 .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
                 
                 .requestMatchers("/my-bookings/{bookingType}/upcoming/{bid}/delete").hasRole("CUSTOMER")
+                .anyRequest().permitAll()
 
                 
 
