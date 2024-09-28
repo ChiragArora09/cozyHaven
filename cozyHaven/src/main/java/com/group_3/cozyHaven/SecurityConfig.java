@@ -79,15 +79,12 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
+                
+                
 
 
 
 	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
-//                .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
-//                .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
                 
                 .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
                 

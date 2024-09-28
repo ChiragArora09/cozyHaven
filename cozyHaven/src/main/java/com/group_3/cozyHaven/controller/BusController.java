@@ -115,12 +115,6 @@ public class BusController {
 		return busService.getBusBetweenStops(busInputDto.getSource(), busInputDto.getDestination());
 	}
 	
-	
-//	@PostMapping("/booking/{cust_id}/{busId}")
-//	public ResponseEntity<?> addBooking(@PathVariable int cust_id, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
-//			busBooking = busBookingService.addBooking(cust_id, busId, busBooking);
-//			return ResponseEntity.ok(busBooking); 
-//	}
 	// Processing the BOOKING
 	@PostMapping("/booking/{busId}")
 	public ResponseEntity<?> addBooking(Principal principal, @PathVariable int busId, @RequestBody BusBooking busBooking) throws InputValidationException{
