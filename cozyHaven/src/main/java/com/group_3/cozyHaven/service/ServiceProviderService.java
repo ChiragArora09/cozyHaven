@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.enums.ServiceType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.ServiceProvider;
 import com.group_3.cozyHaven.model.User;
@@ -26,6 +27,9 @@ public class ServiceProviderService {
 	
 	public ServiceProvider addServiceProvider(ServiceProvider serviceProvider) {
 		User user = serviceProvider.getUser();
+//		ServiceType serviceType = serviceProvider.getServiceType();
+//		String type = serviceType.toString();
+//		user.setRole("ROLE_"+type+"_SERVICE_PROVIDER");
 		user.setRole("ROLE_SERVICE_PROVIDER");
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));

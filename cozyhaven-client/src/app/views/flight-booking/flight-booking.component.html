@@ -1,0 +1,45 @@
+<app-navbar></app-navbar>
+<div class="background"></div>
+
+<form class="flight-booking-form">
+
+    <div class="form-section">
+        <div class="input-container">
+            <div class="input-box">
+                <label for="fromLocation">From</label>
+                <input type="text" id="fromLocation" placeholder="Enter departure location">
+            </div>
+            <div class="form-divider">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
+            <div class="input-box">
+                <label for="toLocation">To</label>
+                <input type="text" id="toLocation" placeholder="Enter destination location">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="dropdown-container">
+            <label for="dropdown">Select Class</label>
+            <div class="custom-dropdown">
+                <select id="dropdown">
+                    <option value="default" disabled selected>Select a class...</option>
+                    <option value="ECONOMY">ECONOMY</option>
+                    <option value="PREMIUM_ECONOMY">PREMIUM ECONOMY</option>
+                    <option value="BUSINESS">BUSINESS</option>
+                    <option value="FIRST_CLASS">FIRST CLASS</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-section">
+        <button class="search-button">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</form>
+
+      

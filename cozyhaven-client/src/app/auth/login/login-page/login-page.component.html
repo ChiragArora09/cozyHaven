@@ -1,0 +1,35 @@
+<div class="background-image">
+    <div class="login-container">
+        <div class="login-error" *ngIf="loginErrMsg != ''">
+            {{loginErrMsg}}
+          </div>
+        <h2>Cozy Haven</h2>        
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <div class="input-containers">
+                <div class="input-container">
+                    <div class="input-part">
+                        <input type="text" id="username" class="form-control" placeholder="Username" formControlName="username">
+                        <label for="username"><i class="fa-solid fa-user" style="color: #545454;"></i></label>
+                    </div>
+                    <div class="input-error" *ngIf="loginForm.get('username').invalid && loginForm.get('username').touched"> 
+                        <small *ngIf="loginForm.get('username').errors['required']">username is required</small>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <div class="input-part">
+                        <input type="password" id="password" class="form-control" placeholder="Password" formControlName="password">
+                        <label for="password"><i class="fa-solid fa-key" style="color: #545454;"></i></label>
+                    </div>
+                    <div class="input-error" *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched"> 
+                        <small *ngIf="loginForm.get('password').errors['required']">password is required</small>
+                    </div>
+                </div>
+                <div class="input-container">
+                    <button type="submit" class="login-button">LOGIN</button>
+                </div>
+            </div>
+            <p class="p-info">Don't have an account? <a href="#" class="signup-link">Sign up</a></p>
+        </form>
+    </div>
+</div>

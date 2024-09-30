@@ -1,0 +1,48 @@
+.app-navbar {
+    position:absolute;
+    left: 65px;
+    top: 40px;
+    padding: 10px 5px;
+    background: #ffffff;
+    width: 90%;
+    border-radius: 40px;
+    z-index:2;
+  }
+  
+  .navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .logo {
+    height: 30px;
+    width: 25px;
+    cursor: pointer;
+  }
+  
+  .logo img {
+    height: 35px;
+    transition: height 0.2s;
+  }
+
+  .logo img:hover {
+    height:37px;
+  }
+  
+  .user-greeting {
+    display: flex;
+    align-items: center;
+    font-family: 'Serif', sans-serif;
+    font-size: 16px;
+    color: #333;
+    gap: 10px;
+  }
+  
+  .user-greeting i {
+    font-size: 20px;
+    margin-left: 8px;
+    cursor: pointer;
+  }
