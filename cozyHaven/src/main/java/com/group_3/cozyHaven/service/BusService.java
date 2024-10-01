@@ -1,6 +1,10 @@
 package com.group_3.cozyHaven.service;
 
 import java.time.LocalTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +24,7 @@ import com.group_3.cozyHaven.repository.BusRepository;
 
 @Service
 public class BusService {
+	private Logger logger = LoggerFactory.getLogger(BusService.class);
 	
 	@Autowired
 	private ServiceProviderService serviceProviderService;
@@ -30,20 +35,23 @@ public class BusService {
 	public Bus addBus(int serviceProviderId, Bus bus) throws InputValidationException {
 		ServiceProvider serviceProvider = serviceProviderService.getById(serviceProviderId);
 		bus.setServiceProvider(serviceProvider);
+		logger.info("A new bus added by service provider "+ serviceProvider.getFullName()+" id:"+serviceProviderId);
 		return busRepository.save(bus);
 	}
 	
 	public Bus findById(int bid) throws InvalidIdException {
 		Optional<Bus> optional = busRepository.findById(bid);
-		if(optional.isEmpty())
+		if(optional.isEmpty()) {
+			logger.error("Invalid Bus id given");
 			throw new InvalidIdException("Bus Id invalid");
-		
+		}
 		return optional.get();
 	}
 
 	public List<BusBetweenStopsDto> getBusBetweenStops(String source, String destination) {
 		List<Object[]> list = busRepository.getBusIdsForSourceAndDestination(source, destination);
 		List<Integer> busIds = new ArrayList<>();
+		logger.info("Fetching bus IDs of buses that travel between "+ source + " and " + destination);
 		for(Object[] ids: list) {
 			int id = (int) ids[0];
 			busIds.add(id);
@@ -77,7 +85,7 @@ public class BusService {
         List<BusBetweenStopsDto> filteredBusesBySource = busBetweenStopsDtos.stream()
                 .filter(bus -> bus.getSource().equals(source))
                 .collect(Collectors.toList());
-		
+        logger.info("Buses fetched for "+ source + " and " + destination);
 		return filteredBusesBySource;
 		
 	}
@@ -85,7 +93,9 @@ public class BusService {
 	public List<BookingTicket> getBookingTicket(int bid) {
 		List<Object[]> list = busRepository.getBookingTicket(bid);
 		List<BookingTicket> listDto = new ArrayList<>();
-
+		
+		logger.info("Generating booking ticket for booking id: "+bid);
+		
 		for(Object[] obj : list) {
 			String busName = obj[0].toString();
 			String busNumber = obj[1].toString();
@@ -101,7 +111,7 @@ public class BusService {
 			
 			BookingTicket bookingTicket = new BookingTicket(date, source, destination, status, seatNumber, busType, busName, passengerName, passengerAge, busNumber, seatType);
 			listDto.add(bookingTicket);
-		}	
+		}
 		return listDto;
 	}
 

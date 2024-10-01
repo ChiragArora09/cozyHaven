@@ -17,7 +17,7 @@ public class GetId {
 	
 	public int getIdByUsername(String username) {
 		Optional<User> optional = userRepository.findByUsername(username); // get user object using the username
-		User user = optional.get(); // insert into user 
+		User user = optional.get();
 		String role = user.getRole();
 		int id = -1;
 		if(role.equals("ROLE_SERVICE_PROVIDER")) {

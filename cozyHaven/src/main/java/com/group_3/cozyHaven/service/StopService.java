@@ -9,12 +9,21 @@ import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Stop;
 import com.group_3.cozyHaven.repository.StopRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class StopService {
 	
-	@Autowired StopRepository stopRepository;
+	@Autowired 
+	private StopRepository stopRepository;
+	
+	private Logger logger = LoggerFactory.getLogger(StopService.class);
+	
+	
 
 	public Stop addStop(Stop stop) {
+		logger.info("Stop " + stop.getStopName() + " added by a service provider");
 		return stopRepository.save(stop);
 	}
 	

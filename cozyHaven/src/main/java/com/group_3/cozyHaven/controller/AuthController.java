@@ -4,16 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group_3.cozyHaven.JwtUtil;
-import com.group_3.cozyHaven.dto.MessageDto;
+
+import com.group_3.cozyHaven.dto.TokenDto;
 import com.group_3.cozyHaven.model.User;
-import com.group_3.cozyHaven.repository.UserRepository;
 import com.group_3.cozyHaven.service.UserService;
 
 
@@ -30,14 +30,10 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
     
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-	private PasswordEncoder passwordEncoder;
-    
     @PostMapping("/auth/token")
-    public MessageDto createAuthenticationToken(@RequestBody User authenticationRequest,MessageDto dto) throws Exception {
+
+    public TokenDto createAuthenticationToken(@RequestBody User authenticationRequest, TokenDto dto) throws Exception {
+
  
         try {
             authenticationManager.authenticate(
@@ -50,7 +46,8 @@ public class AuthController {
         final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         System.out.println(userDetails.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        dto.setMsg(jwt);
+ 
+        dto.setToken(jwt);
         return dto;
     }
     

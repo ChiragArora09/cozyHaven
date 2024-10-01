@@ -1,5 +1,7 @@
 package com.group_3.cozyHaven.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import com.group_3.cozyHaven.repository.BusStopRepository;
 
 @Service
 public class BusStopService {
+	
+	private Logger logger = LoggerFactory.getLogger(BusStopService.class);
 	
 	@Autowired
 	private BusService busService;
@@ -27,6 +31,8 @@ public class BusStopService {
 		
 		busStop.setBus(bus);
 		busStop.setStop(stop);
+		
+		logger.info("Bus " + bus.getName() + " " + bus.getNumber() + " " + "now has a stop " + stop.getStopName());
 		
 		return busStopRepository.save(busStop);
 		

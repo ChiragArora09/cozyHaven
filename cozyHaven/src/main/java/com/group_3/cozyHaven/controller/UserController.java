@@ -33,7 +33,6 @@ public class UserController {
     public String customerHello() {
         return "Hello, Customer!";
     }
-
     
     @GetMapping("/admin/hello")
     public String adminHello() {
@@ -52,6 +51,6 @@ public class UserController {
     	String username = principal.getName();
     	User info = userRepository.findByUsername(username).get();
     	return info; 
-    }
 
+    }
 }

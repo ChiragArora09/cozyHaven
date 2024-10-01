@@ -40,6 +40,7 @@ public class SecurityConfig {
 	            
 	            // Allow service provider to add rooms, hotels, etc.
 	            .requestMatchers("service-provider/add").permitAll()
+
 	            .requestMatchers("/hotel/addHotel").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/room/add/{hotelId}").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/image/upload/{hotelId}/{roomId}").hasRole("SERVICE_PROVIDER")
@@ -66,6 +67,29 @@ public class SecurityConfig {
 	            .requestMatchers("/package/search").hasRole("CUSTOMER")
                 .requestMatchers("/package/detailsView/{holidayPackageId}").hasRole("CUSTOMER")
 	            .requestMatchers("/booking/package/{holidayPackageId}").hasRole("CUSTOMER")
+
+	            .requestMatchers("/hotel/add/{serviceProviderId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/add/{serviceProviderId}/{hotelId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/image/upload/{hotelId}/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/amenities/add/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/update/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/updateAvailabity").hasRole("SERVICE_PROVIDER")
+	            
+	            //allow customers to fetch and book hotels rooms
+	            .requestMatchers("/customer/add").permitAll()
+	            .requestMatchers("hotel/search/{location}").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/{location}").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/rooms/{hotelId}").hasRole("CUSTOMER")
+	            .requestMatchers("hotel/amenities/{roomId}").hasRole("CUSTOMER")
+	         // .requestMatchers("/customer/booking/{customerId}/{roomId}").hasRole("CUSTOMER")
+	            .requestMatchers("/room/{hotelId}/{roomType}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking//room/{roomId}/{customerId}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking/customer/{customerId}").hasAnyRole("CUSTOMER","SERVICE_PROVIDER")
+	            .requestMatchers("/reviews/{customerId}/{hotelId}").hasRole("CUSTOMER")
+	            .requestMatchers("/booking/cancel/{customerId}").hasRole("CUSTOMER")
+	            .requestMatchers("amenities/{roomId}").hasRole("CUSTOMER")
+	            .requestMatchers("/package/search").hasRole("CUSTOMER")
+                .requestMatchers("/package/detailsView/{holidayPackageId}").hasRole("CUSTOMER")
 	            
                 .requestMatchers("/admin/add").permitAll()
                 .requestMatchers("/package/hotel/add").hasRole("ADMIN")
@@ -82,17 +106,17 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
+                
+                
 
 
 
 	            .requestMatchers("/flight/add").hasRole("SERVICE_PROVIDER")
-//                .requestMatchers("/flight/route").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-route").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-class").hasRole("SERVICE_PROVIDER")
-//	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
-//                .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
                 
                 .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
+                
+                .requestMatchers("/my-bookings/{bookingType}/upcoming/{bid}/delete").hasRole("CUSTOMER")
+                .anyRequest().permitAll()
 
                 
 

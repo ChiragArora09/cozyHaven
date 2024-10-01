@@ -48,4 +48,13 @@ public class FlightSeat {
 	public void setFlightClass(FlightClass flightClass) {
 		this.flightClass = flightClass;
 	} 
+	
+	public FlightSeatType getFlightSeatType() {
+		return flightSeatType;
+	}
+
+	public void setFlightSeatType(FlightSeatType flightSeatType) {
+		this.flightSeatType = flightSeatType;
+	}
+
 }
