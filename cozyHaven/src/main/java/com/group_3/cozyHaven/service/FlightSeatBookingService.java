@@ -58,9 +58,11 @@ public class FlightSeatBookingService {
 	}
 
 
-	public List<FlightPayment> calculateTotalAmount(int bid) {
+	public List<FlightPayment> calculateTotalAmount(int bid) throws InputValidationException {
 		List<Object[]> list = flightSeatBookingRepository.getPaymentInfo(bid);
 		List<FlightPayment> paymentList = new ArrayList<>();
+		
+		double totalBookingAmount = 0;
 		
 		for(Object[] obj : list) {
 			double amount = (double) obj[0];
@@ -85,9 +87,14 @@ public class FlightSeatBookingService {
 			}
 		
 			FlightPayment payment = new FlightPayment(amount, seatType, classType, totalAmount);
+			totalBookingAmount+=totalAmount;
 			paymentList.add(payment);
 		}
-			return paymentList;
+		FlightBooking currentBooking = flightBookingService.getById(bid);
+		currentBooking.setAmount(totalBookingAmount);
+		flightBookingRepository.save(currentBooking);
+		
+		return paymentList;
 	}
 
 

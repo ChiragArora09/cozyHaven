@@ -38,10 +38,10 @@ public class CustomerBookingService {
 	private FlightSeatBookingRepository flightSeatBookingRepository;
 
 	public List<?> getMyBookings(int customerId, String bookingType, String bookingPeriod) {
-//		System.out.println(bookingPeriod);
-//		System.out.println(bookingType);
+		System.out.println(bookingPeriod);
+		System.out.println(bookingType);
 		if(bookingType.equals("Flight")){
-		//	System.out.println("In flight");
+			System.out.println("In flight");
 			List<Object[]> list = flightBookingRepository.getBookings(customerId);
 			List<VehicleBookingDetails> flightBookingDetailsList = new ArrayList<>();
 			for(Object[] obj : list) {

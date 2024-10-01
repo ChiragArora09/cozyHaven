@@ -17,7 +17,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 	List<Object[]> getFlightBetweenStops(Integer integer, String source, String destination);
 
 //	@Query(value = "select f.name, f.number, ft.name, ft.age, fs.seat_number, fs.flight_seat_type, fc.type, fb.source, fb.destination, fb.date, fb.status from flight_seat_booking fsb JOIN flight_seat fs ON fs.id=fsb.flight_seat_id JOIN flight_class fc ON fc.id=fs.flight_class_id JOIN flight f ON f.id=fc.flight_id JOIN flight_booking fb ON fb.id=fsb.flight_booking_id JOIN flight_traveller ft ON ft.flight_booking_id=fb.id WHERE fb.id=?1 GROUP BY ft.id;", nativeQuery = true)
-	@Query("SELECT f.name, f.number, ft.name, ft.age, fs.seatNumber, fs.flightSeatType, fc.type, fb.source, fb.destination, fb.date, fb.status FROM FlightSeatBooking fsb JOIN fsb.flightSeat fs JOIN fsb.flightBooking fb JOIN fs.flightClass fc JOIN fc.flight f JOIN FlightTraveller ft ON ft.flightBooking.id=fb.id WHERE fb.id=?1 GROUP BY ft.id")
+	@Query("SELECT f.name, f.number, ft.name, ft.age, fs.seatNumber, fs.flightSeatType, fc.type, fb.source, fb.destination, fb.date, fb.status FROM FlightSeatBooking fsb JOIN fsb.flightSeat fs JOIN fsb.flightBooking fb JOIN fs.flightClass fc JOIN fc.flight f JOIN FlightTraveller ft ON ft.flightBooking.id=fb.id WHERE fb.id=?1")
 	List<Object[]> getBookingTicket(int bid);
 	
 }
