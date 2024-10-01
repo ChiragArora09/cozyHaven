@@ -124,6 +124,7 @@ public class Booking {
 		this.status = status;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Booking [id=" + id + ", customer=" + customer + ", room=" + room + ", checkOutDate=" + checkOutDate

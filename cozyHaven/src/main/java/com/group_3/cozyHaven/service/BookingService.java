@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.group_3.cozyHaven.dto.BookingDetailsDto;
 import com.group_3.cozyHaven.enums.BookedStatus;
+import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.exception.RoomUnavailableException;
 import com.group_3.cozyHaven.model.Booking;
@@ -35,108 +35,154 @@ public class BookingService {
 	@Autowired
 	private RoomService roomService;
 	
-	public Booking bookRoom(int customerId, int roomId, Booking booking) throws InvalidIdException, RoomUnavailableException {
-		
-		Optional<Customer> customerOpt = customerRepository.findById(customerId);
-		if (customerOpt.isEmpty()) {
-			throw new InvalidIdException("Please sign Up to Book Hotels");
-		}
-		Customer customer = customerOpt.get();
-		
-		Optional<Room> roomOpt = roomRepository.findById(roomId);
-		if (roomOpt.isEmpty()) {
-			throw new InvalidIdException("Room is not available");
-		}
-		Room room = roomOpt.get();
-		
-		if(booking.getStatus()==BookedStatus.CANCELLED || booking.getStatus()==BookedStatus.CHECKED_OUT) {
-		List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(
-		        roomId, booking.getCheckInDate(), booking.getCheckOutDate()
-		    );
-		    if (!overlappingBookings.isEmpty()) {
-		        throw new RoomUnavailableException("The room is already booked for the selected dates.");
-		    }
-		
-		int available=room.getTotalRooms()-room.getBookedRooms();
-		if (booking.getNumberOfRooms() > available || available<=0) {
-			throw new RoomUnavailableException("Not enough room available");
-		}
-		}
-		booking.setCustomer(customer);
+	public Booking bookRoom(int roomId, int customerId, Booking booking) 
+	        throws InvalidIdException, RoomUnavailableException, InputValidationException {
+	    
+	    // Validate customer
+	    Optional<Customer> customerOpt = customerRepository.findById(customerId);
+	    if (customerOpt.isEmpty()) {
+	        throw new InvalidIdException("Please sign Up to Book Hotels");
+	    }
+	    Customer customer = customerOpt.get();
+	    
+	    // Validate room
+	    Optional<Room> roomOpt = roomRepository.findById(roomId);
+	    if (roomOpt.isEmpty()) {
+	        throw new InvalidIdException("Room is not available");
+	    }
+	    Room room = roomOpt.get();
+	    
+	    List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(roomId, booking.getCheckInDate(), booking.getCheckOutDate());
+	    if (!overlappingBookings.isEmpty()) {
+	        throw new RoomUnavailableException("The room is already booked for the selected dates.");
+	    }
+	    
+	    // Check available rooms
+	    int available = room.getTotalRooms() - room.getBookedRooms();
+	    if (booking.getNumberOfRooms() > available || available== 0) {
+	        throw new RoomUnavailableException("Not enough room available");
+	    }
+	    
+	    if (booking.getNumGuests() > room.getCapacity()) {
+	        throw new RoomUnavailableException("The number of guests exceeds the room capacity.");
+	    }
+	    
+	  
+	    booking.setCustomer(customer);
 	    booking.setRoom(room);
 	    booking.setBookedDate(LocalDate.now());
-		booking.setStatus(BookedStatus.CONFIRMED);
-    
-		Booking savedBooking = bookingRepository.save(booking);
-		
-		Integer diff=bookingRepository.findDateDiff(savedBooking.getId());
-		double totalAmount;
-		
-		if(diff==null) {
-			totalAmount=room.getPrice();
-		}
-		else {
-			int numberOfRooms=booking.getNumberOfRooms();
-			double roomPrice=room.getPrice();
-			totalAmount=diff*roomPrice*numberOfRooms;
-		}
-			savedBooking.setTotalAmount(totalAmount);
-			bookingRepository.save(savedBooking);
-		room.setBookedRooms(room.getBookedRooms() + booking.getNumberOfRooms());
-		roomRepository.save(room);
-			
-		
-		return savedBooking;
+	    booking.setStatus(BookedStatus.CONFIRMED);
+	    
+	    Booking savedBooking = bookingRepository.save(booking);
+	    Integer diff = bookingRepository.findDateDiff(savedBooking.getId());
+	    double totalAmount;
+
+	    
+	    if (diff == null) {
+	        totalAmount = room.getPrice();
+	    } else {
+	        int numberOfRooms = booking.getNumberOfRooms();
+	        double roomPrice = room.getPrice();
+	        totalAmount = diff * roomPrice * numberOfRooms;
+	    }
+	    
+	    savedBooking.setTotalAmount(totalAmount);
+	    bookingRepository.save(savedBooking);
+	    
+	    
+	    room.setBookedRooms(room.getBookedRooms() + booking.getNumberOfRooms());
+	    roomRepository.save(room);
+	    
+	    return savedBooking;
 	}
-	
+
 
 	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {
-		    List<Booking> bookings = bookingRepository.findAllBooking(customerId);
-	        List<BookingDetailsDto> bookingDetails = new ArrayList<>();
+	    List<Object[]> list = bookingRepository.findAllBooking(customerId);  
+	    List<BookingDetailsDto> bookingDetails = new ArrayList<>();
+	    
+	    for (Object[] obj : list) { 
+	    	int bid=(int)obj[0];
+	        LocalDate bookedDate =LocalDate.parse(obj[1].toString());  
+	        String checkOutDate = obj[2].toString();
+	        LocalDate checkInDate = LocalDate.parse(obj[3].toString());
+	        int numberOfRooms = (int) obj[4];
+	        int numGuests = (int) obj[5];
+	        String totalAmount = obj[6].toString();
+	        String status = obj[7].toString();
+	        int hotelId=(int)obj[8];
+	        String hotelName = obj[9].toString();
+	        String location = obj[10].toString();
+	        
+	        BookingDetailsDto dto = new BookingDetailsDto(bid,bookedDate,checkOutDate,checkInDate, numberOfRooms, numGuests, totalAmount, status,hotelId, hotelName, location);
+	        bookingDetails.add(dto);
+	    }
 
-	        for (Booking booking : bookings) {
-	            Room room = booking.getRoom();
-	            String hotelName = room.getHotel().getHotelName();
-	            String location = room.getHotel().getLocation();
-
-	            BookingDetailsDto dto = new BookingDetailsDto(
-	                booking.getBookedDate(),
-	                booking.getCheckOutDate(),
-	                booking.getCheckInDate(),
-	                booking.getNumberOfRooms(),
-	                booking.getNumGuests(),
-	                booking.getTotalAmount(),
-	                booking.getStatus().name(), 
-	                hotelName,
-	                location);
-
-	            bookingDetails.add(dto);
-	        }
-
-	        return bookingDetails;
-	
-		
+	    return bookingDetails;
 	}
 
-	public Booking cancelBooking(int customerId,LocalDate bookedDate) throws InvalidIdException {
+	public Booking cancelBooking(int customerId,int bookingId) throws InvalidIdException {
 		
-		Optional<Booking> bookingOpt = bookingRepository.findByBookedDate(customerId,bookedDate);
+		Optional<Booking> bookingOpt = bookingRepository.findByBookedDate(customerId,bookingId);
 		if (bookingOpt.isEmpty()) {
 			throw new InvalidIdException("No booking made");
 		}
 		Booking booking = bookingOpt.get();
-		
 		booking.setStatus(BookedStatus.CANCELLED);
 		Booking savedBooking=bookingRepository.save(booking);
-		
 		Optional<Room> roomOpt = roomRepository.findById(booking.getRoom().getId());
 		if (roomOpt.isEmpty()) {
 			throw new InvalidIdException("Room is not booked");
 		}
 		Room room = roomOpt.get();
-		
 		room.setBookedRooms(room.getBookedRooms()-1);
 		roomRepository.save(room);
 		return booking;
+	}
+
+
+	public List<Booking> allBooking() {
+		return bookingRepository.findAll();
+		
+	}
+
+
+	public List<BookingDetailsDto> getMyBooking(int customerId, String bookingType, String bookingPeriod) {
+		if(bookingType.equals("Hotel")) {
+			List<Object[]> list=bookingRepository.getBookedDate(customerId);
+			List<BookingDetailsDto> bookingDetails = new ArrayList<>();
+		    
+		    for (Object[] obj : list) { 
+		    	int bid=(int)obj[0];
+		        LocalDate bookedDate =LocalDate.parse(obj[1].toString());  
+		        String checkOutDate = obj[2].toString();
+		        LocalDate checkInDate = LocalDate.parse(obj[3].toString());
+		        
+		        int numberOfRooms = (int) obj[4];
+		        int numGuests = (int) obj[5];
+		        
+		        String totalAmount = obj[6].toString();
+		        String status = obj[7].toString();
+		        int hotelId=(int)obj[8];
+		        String hotelName = obj[9].toString();
+		        String location = obj[10].toString();
+		        
+		        BookingDetailsDto dto = new BookingDetailsDto(bid,bookedDate,checkOutDate,checkInDate, numberOfRooms, numGuests, totalAmount, status,hotelId, hotelName, location);
+		        bookingDetails.add(dto);
+		    }
+		    if(bookingPeriod.equals("Past")) {
+		    	List<BookingDetailsDto> filteredPastList=bookingDetails.stream().filter(d->d.getCheckInDate().isBefore(LocalDate.now()) && !d.getStatus().equals("CANCELLED")).toList();
+		    	return filteredPastList;
+		    }
+		    else if(bookingPeriod.equals("Upcoming")) {
+		    	List<BookingDetailsDto> filteredUpcomingList=bookingDetails.stream().filter(d->!d.getStatus().equals("CANCELLED") && d.getCheckInDate().isAfter(LocalDate.now())|| d.getBookedDate().isEqual(LocalDate.now())).toList();
+		    	return filteredUpcomingList;
+		    }
+		    else {
+		    	List<BookingDetailsDto> filteredCancelledList=bookingDetails.stream().filter(d->d.getStatus().equals("CANCELLED")).toList();
+		    	return filteredCancelledList;
+		    }
+		}
+		 return null;
 	}
 }

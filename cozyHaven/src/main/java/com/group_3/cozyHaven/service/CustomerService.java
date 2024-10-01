@@ -51,7 +51,7 @@ public class CustomerService {
 
 		user = userRepository.save(user); 
 		customer.setUser(user);
-		logger.info("adding employee to db" +customer);
+		logger.info("adding customer to db" +customer);
 
 		return customerRepository.save(customer);
 		
@@ -59,18 +59,18 @@ public class CustomerService {
 
 	public void validate(Customer customer) throws InputValidationException {
 		if(customer == null)  {
-			logger.error("Employee given is NULL, InputValidationException Thrown");
+			logger.error("Customer given is NULL, InputValidationException Thrown");
 			throw new InputValidationException("Object cannot be null ");
 		}
 
 		if(customer.getFullname() == null || customer.getFullname().equals("")) {
-			logger.error("Employee name given is NULL or blank, InputValidationException Thrown");
-			throw new InputValidationException("Field employee.name cannot be blank ");
+			logger.error("Customer name given is NULL or blank, InputValidationException Thrown");
+			throw new InputValidationException("Field customer.name cannot be blank ");
 		}
 
 		if(customer.getContactNumber() == null || customer.getContactNumber().equals("")) {
-			logger.error("Employee contact given is NULL or blank, InputValidationException Thrown");
-			throw new InputValidationException("Field employee.contact cannot be blank ");
+			logger.error("Customer contact given is NULL or blank, InputValidationException Thrown");
+			throw new InputValidationException("Field customer.contact cannot be blank ");
 		}
 		
 	}

@@ -18,8 +18,10 @@ import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.Day;
 import com.group_3.cozyHaven.model.Extra;
 import com.group_3.cozyHaven.model.HolidayPackage;
+import com.group_3.cozyHaven.model.PackageBooking;
 import com.group_3.cozyHaven.model.PackageHotel;
 import com.group_3.cozyHaven.service.HolidayPackageService;
+import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
 @RequestMapping("/package")
@@ -27,6 +29,7 @@ public class HolidayPackageController {
 	
 	@Autowired
 	private HolidayPackageService holidayPackageService;
+	
 	
 	@PostMapping("/holiday/add/{packageHotelId}")
 	public ResponseEntity<?> addPackage(@PathVariable int packageHotelId ,@RequestBody HolidayPackage holidayPackage) {

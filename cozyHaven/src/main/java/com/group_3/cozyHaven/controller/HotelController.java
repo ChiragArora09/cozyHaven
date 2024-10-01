@@ -16,13 +16,12 @@ import com.group_3.cozyHaven.dto.HotelInputDto;
 import com.group_3.cozyHaven.dto.HotelResultDto;
 import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
-import com.group_3.cozyHaven.model.Amenities;
-import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.Hotel;
 import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.service.CustomerService;
 import com.group_3.cozyHaven.service.HotelService;
 import com.group_3.cozyHaven.service.RoomService;
+import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
 @RequestMapping("/hotel")
@@ -37,10 +36,17 @@ public class HotelController {
 	@Autowired
 	private CustomerService customerService;
 	
-    @PostMapping("/add/{serviceProviderId}")
-	public ResponseEntity<?> addHotel(@PathVariable int serviceProviderId, @RequestBody Hotel hotel) {
+	@Autowired
+	private GetId getId;
+	
+	// add hotel
+	
+    @PostMapping("/addHotel")
+	public ResponseEntity<?> addHotel(Principal principal, @RequestBody Hotel hotel) {
 	    MessageDto dto = new MessageDto();
 	    try {
+	    	String username=principal.getName();
+	    	int serviceProviderId=getId.getIdByUsername(username);
 	        Hotel addedHotel = hotelService.addHotel(serviceProviderId, hotel);
 	        return ResponseEntity.ok(addedHotel);
 	        }
@@ -50,33 +56,19 @@ public class HotelController {
 	    }
 	}	
 	
-	
-
-   /*@GetMapping("{location}")
-	public List<Hotel> searchHotel(@PathVariable String location) {
-		
-		return hotelService.searchHotelByLocation(location);
-		
-	}*/
-	
-	@GetMapping("/rooms/{hotelId}")
-	public ResponseEntity<?> searchRooms(@PathVariable int hotelId){
-		
-		List<Room> rooms=roomService.findByHotel(hotelId);
-		
-		return ResponseEntity.ok(rooms);
-		
+    // search hotel
+    
+    @GetMapping("/search")
+	public List<HotelResultDto> searchHotels(@RequestBody HotelInputDto hotelInputDto){
+		return hotelService.searchHotels(hotelInputDto.getLocation(),hotelInputDto.getCheckInDate(),hotelInputDto.getCheckOutDate(),hotelInputDto.getNumGuests(),hotelInputDto.getNumRooms());
 	}
-	
-	/*@GetMapping("/amenities/{roomId}")
-	public ResponseEntity<?> showAmenities(@PathVariable int roomId){
-		List<Amenities> amenities=roomService.showAmenities(roomId);
-		return ResponseEntity.ok(amenities);
-	}*/
-	
-
-	@GetMapping("/search/{location}")
-	public List<HotelResultDto> searchHotels(@PathVariable String location){
-		return hotelService.searchHotels(location);
+    
+	@GetMapping("/all")
+	public List<Hotel> getAllHotel(Principal principal) {
+		String username=principal.getName();
+		List<Hotel> hotel=hotelService.getAllHotels(username);
+		return hotel;
 	}
+
+	
 }

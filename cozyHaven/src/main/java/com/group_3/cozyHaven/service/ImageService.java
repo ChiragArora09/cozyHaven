@@ -77,14 +77,7 @@ public class ImageService {
 		if(optional.isEmpty()) {
 			throw new InvalidIdException("Invalid Id Given");
 		}
-	
-		Image image=optional.get();
-	    File file=new File(image.getFilePath());
-	    if(file.exists()) {
-	    	if (!file.delete()) {
-	           	System.out.println("failed to delete");
-	        }
-	    }
+	   Image image=optional.get();
 	   imageRepository.deleteById(imageId);
 	    }
 }

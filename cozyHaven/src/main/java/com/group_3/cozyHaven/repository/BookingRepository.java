@@ -13,24 +13,29 @@ import com.group_3.cozyHaven.model.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Integer>{
 
-	List<Booking> findByRoomId(int roomId);
-	
-	@Query(value="select DATEDIFF(br.check_out_date,br.check_in_date) from booking_room br where br.id=:bookingId",nativeQuery=true)
+	@Query("select DATEDIFF(br.checkOutDate,br.checkInDate) from Booking br where br.id=?1")
 	Integer findDateDiff(int bookingId);
 
-	List<Booking> findByCheckOutDate(LocalDate date);
+	 @Query("select br from Booking br where br.room.id=?1 and br.status='CONFIRMED'and (br.checkInDate<?3 and br.checkOutDate>?2)")
+	 List<Booking> findOverlappingBookings(int roomId, LocalDate checkInDate, LocalDate checkOutDate);
+ 
+     @Query("select b from Booking b where b.id=?2 AND b.customer.id =?1")
+	 Optional<Booking> findByBookedDate(int customerId,int bookingId);
 
-	 @Query("SELECT b FROM Booking b WHERE b.room.id = :roomId " +
-	           "AND (b.checkInDate <= :checkOutDate AND b.checkOutDate > :checkInDate)")
-	   List<Booking> findOverlappingBookings(int roomId, LocalDate checkInDate, LocalDate checkOutDate);
+	 @Query("select br.bookedDate,br.checkInDate,br.checkOutDate,br.numberOfRooms,br.numGuests,br.totalAmount,br.status,h.hotelName,h.location from Booking br join br.room hrt join hrt.hotel h where br.customer.id=?1")
+	List<Object[]> findAllBooking(int customerId);
 
-	 @Query("select br from Booking br where br.customer.id=?1")
-     List<Booking> findAllBooking(int customerId);
+	@Query("select b from Booking b where b.status='CONFIRMED' and b.checkOutDate<=?1")
+	List<Booking> findByCheckOutDateLessThanEqual(LocalDate date);
 
-	 @Query("SELECT b FROM Booking b WHERE b.bookedDate = :bookedDate AND b.customer.id = :customerId")
-	 Optional<Booking> findByBookedDate(int customerId, LocalDate bookedDate);
+	 @Query("select br.id, br.bookedDate,br.checkInDate,br.checkOutDate,br.numberOfRooms,br.numGuests,br.totalAmount,br.status,h.id,h.hotelName,h.location from Booking br join br.room hrt join hrt.hotel h where br.customer.id=?1")
+	List<Object[]> getBookedDate(int customerId);
+	
 
-
+// select br.booked_date,br.check_in_date,br.check_out_date,br.number_of_rooms,br.num_guests,br.total_amount,br.status,h.hotel_name,h.location from booking_room br join hotel_room_type hrt on br.room_id=hrt.id join hotel h on hrt.hotel_
+//	 id=h.id where br.customer_id=1;
 	 
-
+// select DATEDIFF(br.check_out_date,br.check_in_date) from booking_room br where br.id=:bookingId  
+// select br from Booking br where b.room.id=?1 and b.checkInDate<=?3 and b.checkOutDate>?2
+// select br from Booking br join br.customer c join c.user u where u.username=?1
 }

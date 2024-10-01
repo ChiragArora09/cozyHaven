@@ -5,12 +5,14 @@ import java.time.LocalDate;
 public class HotelInputDto {
 	
 	private String location;
+
+	private int numGuests;
+	
+	private int numRooms;
 	
 	private LocalDate checkInDate;
 	
 	private LocalDate checkOutDate;
-	
-	private int numberGuests;
 
 	public String getLocation() {
 		return location;
@@ -18,6 +20,23 @@ public class HotelInputDto {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+	
+	public int getNumGuests() {
+		return numGuests;
+	}
+
+	public void setNumGuests(int numGuests) {
+		this.numGuests = numGuests;
+	}
+
+	
+	public int getNumRooms() {
+		return numRooms;
+	}
+
+	public void setNumRooms(int numRooms) {
+		this.numRooms = numRooms;
 	}
 
 	public LocalDate getCheckInDate() {
@@ -36,21 +55,21 @@ public class HotelInputDto {
 		this.checkOutDate = checkOutDate;
 	}
 
-	public int getNumberGuests() {
-		return numberGuests;
-	}
-
-	public void setNumberGuests(int numberGuests) {
-		this.numberGuests = numberGuests;
-	}
-
-	public HotelInputDto(String location, LocalDate checkInDate, LocalDate checkOutDate, int numberGuests) {
+	public HotelInputDto(String location, int numGuests, int numRooms, LocalDate checkInDate, LocalDate checkOutDate) {
 		super();
 		this.location = location;
+		this.numGuests = numGuests;
+		this.numRooms = numRooms;
 		this.checkInDate = checkInDate;
 		this.checkOutDate = checkOutDate;
-		this.numberGuests = numberGuests;
 	}
+	
+	
+
+
+	
+
+	
 	
 	
 

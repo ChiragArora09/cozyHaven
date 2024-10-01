@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,14 @@ import org.springframework.stereotype.Service;
 import com.group_3.cozyHaven.dto.HolidayPackageDto;
 import com.group_3.cozyHaven.dto.PackageDetailsDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
+import com.group_3.cozyHaven.exception.InvalidIdException;
+import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.Day;
 import com.group_3.cozyHaven.model.Extra;
 import com.group_3.cozyHaven.model.HolidayPackage;
+import com.group_3.cozyHaven.model.PackageBooking;
 import com.group_3.cozyHaven.model.PackageHotel;
+import com.group_3.cozyHaven.repository.CustomerRepository;
 import com.group_3.cozyHaven.repository.DayRepository;
 import com.group_3.cozyHaven.repository.ExtraRepository;
 import com.group_3.cozyHaven.repository.HolidayPackageRepository;

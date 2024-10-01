@@ -27,7 +27,7 @@ public class CustomerController {
 	private BookingService bookingService;
 	
 	@PostMapping("/add")
-public ResponseEntity<?> addEmployee(@RequestBody 	Customer customer,MessageDto dto) { //reading the i/p
+public ResponseEntity<?> addEmployee(@RequestBody Customer customer,MessageDto dto) { //reading the i/p
 		
 		try {
 			customerService.validate(customer);

@@ -13,15 +13,19 @@ public class HotelResultDto {
 	    private String price;
 	    private String hotelName;
 	    private String hotelLocation;
+	    private String star;
+	    private String rating;
         private int hotelId;
 		public HotelResultDto(int roomId, String roomType, String price, String hotelName, String hotelLocation,
-				int hotelId) {
+				String star, String rating, int hotelId) {
 			super();
 			this.roomId = roomId;
 			this.roomType = roomType;
 			this.price = price;
 			this.hotelName = hotelName;
 			this.hotelLocation = hotelLocation;
+			this.star = star;
+			this.rating = rating;
 			this.hotelId = hotelId;
 		}
 		public int getRoomId() {
@@ -54,6 +58,18 @@ public class HotelResultDto {
 		public void setHotelLocation(String hotelLocation) {
 			this.hotelLocation = hotelLocation;
 		}
+		public String getStar() {
+			return star;
+		}
+		public void setStar(String star) {
+			this.star = star;
+		}
+		public String getRating() {
+			return rating;
+		}
+		public void setRating(String rating) {
+			this.rating = rating;
+		}
 		public int getHotelId() {
 			return hotelId;
 		}
@@ -61,6 +77,4 @@ public class HotelResultDto {
 			this.hotelId = hotelId;
 		}
 		
-	
-	    
 }

@@ -10,33 +10,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
-import com.group_3.cozyHaven.model.Review;
-import com.group_3.cozyHaven.service.ReviewService;
+import com.group_3.cozyHaven.model.PackageBooking;
+import com.group_3.cozyHaven.service.PackageBookingService;
 import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
-@RequestMapping("/reviews")
-public class ReviewController {
+@RequestMapping("/booking")
+public class PackageBookingController {
 	
 	@Autowired
-	private ReviewService reviewService;
+	private PackageBookingService packageBookingService;
 	
 	@Autowired
 	private GetId getId;
 	
-	@PostMapping("/{hotelId}")
-	public ResponseEntity<?> addReview(Principal principal,@PathVariable int hotelId,@RequestBody Review review){
-		Review reviews;
+	@PostMapping("/package/{holidayPackageId}")
+	public ResponseEntity<?> bookPackage (@PathVariable int holidayPackageId,Principal principal){
+		String username=principal.getName();
+		int customerId=getId.getIdByUsername(username);
 		try {
-			String username=principal.getName();
-			int customerId=getId.getIdByUsername(username);
-			reviews = reviewService.addReview(customerId,hotelId,review);
-			return ResponseEntity.ok(reviews);
-		} catch (InvalidIdException e) {
+			PackageBooking booking= packageBookingService.bookPackage(holidayPackageId,customerId);
+			return ResponseEntity.ok(booking);
+		} catch (InvalidIdException | InputValidationException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		
 	}
 
 }
