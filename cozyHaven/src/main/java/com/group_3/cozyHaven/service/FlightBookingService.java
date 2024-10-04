@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,11 @@ public class FlightBookingService {
 	@Autowired
 	private CustomerService customerService;
 	
-	public FlightBooking addBooking(int custId, int flightid, FlightBooking flightBooking) throws InputValidationException {
+	public FlightBooking addBooking(int custId, FlightBooking flightBooking) throws InputValidationException {
 		Customer customer = customerService.getById(custId);
 		flightBooking.setCustomer(customer);
 		flightBooking.setStatus("Pending");
+		flightBooking.setDate(LocalDate.now());
 		return flightBookingRepository.save(flightBooking);
 	}
 	
