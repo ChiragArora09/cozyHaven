@@ -1,6 +1,7 @@
 package com.group_3.cozyHaven.controller;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,12 +138,12 @@ public class FlightController {
 	}
 	
 	// PROCESSING THE BOOKING
-	@PostMapping("/booking/{flightId}")
-	public ResponseEntity<?> addBooking(Principal principal, @PathVariable int flightId, @RequestBody FlightBooking flightBooking) throws InputValidationException{
+	@PostMapping("/booking")
+	public ResponseEntity<?> addBooking(Principal principal, @RequestBody FlightBooking flightBooking) throws InputValidationException{
 		String CustomerUsername = principal.getName();
 		int customerId = getId.getIdByUsername(CustomerUsername);
-		flightBooking = flightBookingService.addBooking(customerId, flightId, flightBooking);
-		return ResponseEntity.ok(flightBooking); 
+		flightBooking = flightBookingService.addBooking(customerId, flightBooking);
+		return ResponseEntity.ok(flightBooking);
 	}
 	
 	// ADDING PASSENGERS
@@ -165,10 +166,10 @@ public class FlightController {
 	}
 	
 	// GETTING AVAILABLE SEATS
-	@GetMapping("/booking/{bookingId}/{flightId}/get-seats")
-	public List<?> getAvailableSeats(@PathVariable int flightId, @PathVariable int bookingId) throws InputValidationException {
+	@PostMapping("/booking/{bookingId}/{flightId}/get-seats")
+	public List<?> getAvailableSeats(@PathVariable int flightId, @PathVariable int bookingId, @RequestBody LocalDate date) throws InputValidationException {
 		// the booking ID will come from the previous step as soon as the customer finishes the initial booking process
-		return flightSeatService.getAvailableSeats(flightId, bookingId);
+		return flightSeatService.getAvailableSeats(flightId, bookingId, date);
 	}
 	
 	// PAYMENT INFO

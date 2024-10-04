@@ -44,14 +44,14 @@ public class FlightSeatService {
 	}
 
 
-	public List<?> getAvailableSeats(int flightId, int bookingId) throws InputValidationException {
+	public List<?> getAvailableSeats(int flightId, int bookingId, LocalDate date) throws InputValidationException {
 		FlightBooking flightBooking = flightBookingService.getById(bookingId);
 		
 		int sourceCityNumber = flightBooking.getSourceCityNumber();
 		int destinationCityNumber = flightBooking.getDestinationCityNumber();
-		LocalDate bookingDate = flightBooking.getDate();
+//		LocalDate bookingDate = flightBooking.getDate();
 		
-		List<Object[]> list = flightSeatRepository.getAvailableSeats(flightId, sourceCityNumber, destinationCityNumber, bookingDate);
+		List<Object[]> list = flightSeatRepository.getAvailableSeats(flightId, sourceCityNumber, destinationCityNumber, date);
 		
 		List<FlightAvailableSeatDto> flightSeatsList = new ArrayList<>();
 		
