@@ -34,8 +34,6 @@ public class ServiceProvider {
 	@Column(nullable = false)
 	private String address;
 	
-	private String profilePicturePath;
-	
 	@Enumerated(EnumType.STRING)
 	private ServiceType serviceType;
 	
@@ -91,14 +89,6 @@ public class ServiceProvider {
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	public String getProfilePicturePath() {
-		return profilePicturePath;
-	}
-
-	public void setProfilePicturePath(String profilePicturePath) {
-		this.profilePicturePath = profilePicturePath;
 	}
 
 	public ServiceType getServiceType() {

@@ -26,8 +26,6 @@ public class Customer {
 	
 	private String address;
 	
-	private String profilePicture;
-	
 	@Enumerated(EnumType.STRING)
 	private IdType idType;
 	
@@ -76,14 +74,6 @@ public class Customer {
 		this.address = address;
 	}
 
-	public String getProfilePicture() {
-		return profilePicture;
-	}
-
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
-
 	public IdType getIdType() {
 		return idType;
 	}
@@ -111,7 +101,7 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", fullname=" + fullname + ", email=" + email + ", contactNumber=" + contactNumber
-				+ ", address=" + address + ", profilePicture=" + profilePicture + ", idType=" + idType + ", idNumber="
+				+ ", address=" + address + ", profilePicture=" + ", idType=" + idType + ", idNumber="
 				+ idNumber + ", user=" + user + "]";
 	}
 	
