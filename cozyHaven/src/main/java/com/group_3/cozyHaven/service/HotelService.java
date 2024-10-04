@@ -3,6 +3,7 @@ package com.group_3.cozyHaven.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,16 @@ public class HotelService {
 		List<Hotel> hotel=hotelRepository.getAllHotel(username);
 		return hotel;
 		
+	}
+
+	public Hotel deleteHotel(int serviceProviderId, int hotelId) throws InputValidationException {
+		Optional<Hotel> optionalHotel = hotelRepository.findById(hotelId);
+        if (optionalHotel.isEmpty()) {
+            throw new InputValidationException("Hotel not found with id: " + hotelId);
+        }
+
+        Hotel hotel = optionalHotel.get();
+        hotelRepository.deleteById(hotelId); 
+        return hotel;
 	}
 }

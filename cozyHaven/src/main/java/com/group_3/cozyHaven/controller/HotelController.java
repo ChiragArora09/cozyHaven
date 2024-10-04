@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import com.group_3.cozyHaven.service.RoomService;
 import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RequestMapping("/hotel")
 public class HotelController {
 	
@@ -58,7 +61,7 @@ public class HotelController {
 	
     // search hotel
     
-    @GetMapping("/search")
+    @PostMapping("/search")
 	public List<HotelResultDto> searchHotels(@RequestBody HotelInputDto hotelInputDto){
 		return hotelService.searchHotels(hotelInputDto.getLocation(),hotelInputDto.getCheckInDate(),hotelInputDto.getCheckOutDate(),hotelInputDto.getNumGuests(),hotelInputDto.getNumRooms());
 	}
@@ -70,5 +73,15 @@ public class HotelController {
 		return hotel;
 	}
 
-	
+	@DeleteMapping("/delete/{hotelId}")
+	public ResponseEntity<?> deleteHotel(@PathVariable int hotelId,Principal principal) {
+    	try {
+    		String username=principal.getName();
+        	int serviceProviderId=getId.getIdByUsername(username);
+			Hotel delete=hotelService.deleteHotel(serviceProviderId,hotelId);
+			return ResponseEntity.ok(delete);
+		} catch (InputValidationException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

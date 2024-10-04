@@ -30,7 +30,7 @@ public class ServiceProviderService {
 //		ServiceType serviceType = serviceProvider.getServiceType();
 //		String type = serviceType.toString();
 //		user.setRole("ROLE_"+type+"_SERVICE_PROVIDER");
-		user.setRole("ROLE_SERVICE_PROVIDER");
+		user.setRole("HOTEL_SERVICE_PROVIDER");
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user = userRepository.save(user); 
