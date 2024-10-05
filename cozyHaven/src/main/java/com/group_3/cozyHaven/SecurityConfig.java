@@ -42,15 +42,15 @@ public class SecurityConfig {
 	            .requestMatchers("service-provider/add").permitAll()
 
 	            .requestMatchers("/hotel/addHotel").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/room/add/{hotelId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/room/add/{hotelId}").permitAll()
 	            .requestMatchers("/image/upload/{hotelId}/{roomId}").hasRole("SERVICE_PROVIDER")
 	            .requestMatchers("/image/delete/{imageId}").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/amenities/add/{roomId}").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/room/update/{roomId}").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/room/updateAvailability").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/hotel/all").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/booking/all").hasRole("SERVICE_PROVIDER")
-	            .requestMatchers("/room/add/extras/{roomId}").hasRole("SERVICE_PROVIDER")
+	            .requestMatchers("/amenities/add/{roomId}").hasRole("HOTEL_SERVICE_PROVIDER")
+	            .requestMatchers("/room/update/{roomId}").hasRole("HOTEL_SERVICE_PROVIDER")
+	            .requestMatchers("/room/updateAvailability").hasRole("HOTEL_SERVICE_PROVIDER")
+	            .requestMatchers("/hotel/all").permitAll()
+	            .requestMatchers("/booking/all").hasRole("HOTEL_SERVICE_PROVIDER")
+	            .requestMatchers("/room/add/extras/{roomId}").hasRole("HOTEL_SERVICE_PROVIDER")
 	            
 	            //allow customers to fetch and book hotels rooms
 	            .requestMatchers("customer/add").permitAll()

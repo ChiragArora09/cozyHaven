@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.MakePaymentDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
-import com.group_3.cozyHaven.model.BusBooking;
 import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
@@ -35,6 +35,15 @@ public class FlightBookingService {
 			throw new InputValidationException("Invalid ID");
 		}
 		return option.get();
+	}
+
+	public void makePayment(int bid, MakePaymentDto dto) {
+		FlightBooking flightBooking = flightBookingRepository.findById(bid).get();
+		flightBooking.setDiscount(dto.getDiscount());
+		flightBooking.setAmount(dto.getAmount());
+		flightBooking.setStatus("Confirmed");
+		flightBooking.setDate(dto.getDateOfJourney());
+		flightBookingRepository.save(flightBooking);
 	}
 
 }

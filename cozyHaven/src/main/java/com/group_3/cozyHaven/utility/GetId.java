@@ -20,7 +20,7 @@ public class GetId {
 		User user = optional.get();
 		String role = user.getRole();
 		int id = -1;
-		if(role.equals("ROLE_SERVICE_PROVIDER")) {
+		if(role.equals("ROLE_HOTEL_SERVICE_PROVIDER") || role.equals("ROLE_FLIGHT_SERVICE_PROVIDER") || role.equals("ROLE_BUS_SERVICE_PROVIDER")) {
 			List<Object[]> slist = userRepository.getServiceProviderId(username);
 			Object[] spid =  slist.get(0);
 			id = (int) spid[0];

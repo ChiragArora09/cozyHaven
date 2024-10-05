@@ -51,7 +51,6 @@ public class FlightSeatBookingService {
 			
 			flightSeatBookingRepository.save(flightSeatBooking);
 		}
-		flightBooking.setStatus("Confirmed");
 		flightBookingRepository.save(flightBooking);
 		
 		return flightSeatBookings;
@@ -65,29 +64,39 @@ public class FlightSeatBookingService {
 		double totalBookingAmount = 0;
 		
 		for(Object[] obj : list) {
-			double amount = (double) obj[0];
+			double amount = (double) obj[0]; // 2600
 			String seatType = obj[1].toString();
 			String classType = obj[2].toString();
-			double totalAmount = amount;
+			double totalAmount = amount; // 2600
 			
 			// CHECKING THE CLASS TYPE FOR ADDITIONAL COSTS
-			if(classType.equals("PREMIUM_ECONOMY")) {
+			if(classType.equals("ECONOMY")) {
+				totalAmount = amount;
+				System.out.println("In economy" + totalAmount);
+			} else if(classType.equals("PREMIUM_ECONOMY")) {
 				totalAmount = amount*1.2;
+				System.out.println("In premium economy" +totalAmount);
 			} else if(classType.equals("BUSINESS")){
 				totalAmount = amount*2.0;
+				System.out.println("In business" + totalAmount);
 			} else if(classType.equals("FIRST_CLASS")){
 				totalAmount = amount*3.0;
+				System.out.println("In first class" + totalAmount);
 			}
 			
 			// CHECKING THE SEAT TYPE FOR ADDITIONAL COSTS
 			if(seatType.equals("Aisle_Seat")) {
-				totalAmount = totalAmount*1.1;
+				totalAmount = totalAmount*1.1; // 2860
+				System.out.println("In Aisle_seat" + totalAmount);
 			} else if(seatType.equals("Window_Seat")){
 				totalAmount = totalAmount*1.05;
+				System.out.println("In window seat" + totalAmount);
 			}
 		
 			FlightPayment payment = new FlightPayment(amount, seatType, classType, totalAmount);
-			totalBookingAmount+=totalAmount;
+			System.out.println("totalBookingAmount 0" + totalBookingAmount);
+			totalBookingAmount+=totalAmount; // 2860
+			System.out.println("totalBookingAmount 1" + totalBookingAmount);
 			paymentList.add(payment);
 		}
 		FlightBooking currentBooking = flightBookingService.getById(bid);
@@ -95,6 +104,19 @@ public class FlightSeatBookingService {
 		flightBookingRepository.save(currentBooking);
 		
 		return paymentList;
+	}
+
+
+	public long getLoyaltyPoints(int bid, int customerId) {
+		List<Object[]> list = flightBookingRepository.getProviderIdFromBookingId(bid);
+		Object[] id = list.get(0);
+		int serviceProviderId = (int) id[0];
+		
+		list = flightSeatBookingRepository.getLoyaltyPoints(serviceProviderId, customerId);
+		Object[] points = list.get(0);
+		long totalPoints = (long) points[0];
+		
+		return totalPoints;
 	}
 
 

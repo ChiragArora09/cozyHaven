@@ -19,6 +19,7 @@ import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
 import com.group_3.cozyHaven.dto.FlightInputDto;
 import com.group_3.cozyHaven.dto.FlightPayment;
+import com.group_3.cozyHaven.dto.MakePaymentDto;
 import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
@@ -184,5 +185,29 @@ public class FlightController {
 	public List<BookingTicket> getBookingReceipt(@PathVariable int bid) {
 		return flightService.getBookingTicket(bid);
 	}
+	
+	// GET OFFERS FOR A PARTICULAR BOOKING
+	@GetMapping("/get-offers/{bid}")
+	public List<?> getBookingOffers(@PathVariable int bid) {
+		return flightService.getBookingOffers(bid);
+	}
+	
+	// MAKE PAYMENT
+	@PostMapping("/{bid}/confirm-booking")
+	public void makePaymentAndConfirm(@PathVariable int bid, @RequestBody MakePaymentDto dto) {
+		flightBookingService.makePayment(bid, dto);
+	}
+	
+	// GET NUMBER OF LOYALTY POINTS TO APPLY IN FLIGHT BOOKING
+	@GetMapping("{bid}/loyalty-points")
+	public long getLoyaltyPoints(Principal principal, @PathVariable int bid) {
+		String CustomerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(CustomerUsername);
+		long points = flightSeatBookingService.getLoyaltyPoints(bid, customerId);
+		return points;
+	}
+	
+	// GET ALL OFFERS ON A FLIGHT 
+	
 		
 }
