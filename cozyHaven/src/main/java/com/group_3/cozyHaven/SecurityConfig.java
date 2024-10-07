@@ -107,7 +107,7 @@ public class SecurityConfig {
 	            .requestMatchers("/flight/add/flight-seat").hasRole("SERVICE_PROVIDER")
                 .requestMatchers("/flight/flight-between-station").hasRole("CUSTOMER")
                 
-                
+                .requestMatchers("/customer/image/upload").permitAll()
 
 
 
@@ -115,7 +115,7 @@ public class SecurityConfig {
                 
                 .requestMatchers("/bus/add-bus").hasRole("SERVICE_PROVIDER")
                 
-                .requestMatchers("/my-bookings/{bookingType}/upcoming/{bid}/delete").hasRole("CUSTOMER")
+                .requestMatchers("/my-bookings/{bookingType}/upcoming/{bid}/delete").permitAll()
                 .anyRequest().permitAll()
 
                 

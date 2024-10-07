@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.internal.util.beans.BeanInfoHelper.ReturningBeanInfoDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +29,7 @@ import com.group_3.cozyHaven.model.Flight;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightCity;
 import com.group_3.cozyHaven.model.FlightClass;
+import com.group_3.cozyHaven.model.FlightOffer;
 import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.model.FlightSeatBooking;
 import com.group_3.cozyHaven.model.FlightTraveller;
@@ -88,6 +90,14 @@ public class FlightController {
 		}
 	}
 	
+	// GET MY FLIGHTS
+	@GetMapping("/get-my-flights")
+	public List<Flight> getFlights(Principal principal) throws InputValidationException{
+		String serviceProviderUsername = principal.getName();
+		int serviceProviderId = getId.getIdByUsername(serviceProviderUsername);
+		return flightService.getFlights(serviceProviderId);
+	}
+	
 	// ADDING A CITY BY SERVICE PROVIDER
 	@PostMapping("/add-city")
 	public ResponseEntity<?> addCity(@RequestBody City city){
@@ -95,6 +105,16 @@ public class FlightController {
 		return ResponseEntity.ok(city);
 	}
 	
+	// GET ALL CITIES IN THE DATABASE
+	@GetMapping("/get-flight-cities")
+	public List<City> getFlightCitites(){
+		return cityService.getAll();
+	}
+	
+	@GetMapping("/get-cities")
+	public List<FlightCity> getCities() {
+		return flightService.getCities();
+	}
 	
 	// ADDING FLIGHT AND ITS STOPS
 	@PostMapping("/add/flight-city/{flightid}/{cityid}")
@@ -207,7 +227,10 @@ public class FlightController {
 		return points;
 	}
 	
-	// GET ALL OFFERS ON A FLIGHT 
-	
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT
+	@GetMapping("/getAllOffers/{flightId}")
+	public List<FlightOffer> getOffers(@PathVariable int flightId) {
+		return flightBookingService.getAllOffers(flightId);
+	}
 		
 }

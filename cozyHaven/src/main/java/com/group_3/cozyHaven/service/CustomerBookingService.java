@@ -12,9 +12,9 @@ import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.BusBooking;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.repository.BusBookingRepository;
-import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
+//import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
-import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
+//import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
 
 @Service
 public class CustomerBookingService {
@@ -31,17 +31,14 @@ public class CustomerBookingService {
 	@Autowired
 	private FlightBookingService flightBookingService;
 	
-	@Autowired
-	private BusSeatBookingRepository busSeatBookingRepository;
-	
-	@Autowired
-	private FlightSeatBookingRepository flightSeatBookingRepository;
+//	@Autowired
+//	private BusSeatBookingRepository busSeatBookingRepository;
+//	
+//	@Autowired
+//	private FlightSeatBookingRepository flightSeatBookingRepository;
 
 	public List<?> getMyBookings(int customerId, String bookingType, String bookingPeriod) {
-		System.out.println(bookingPeriod);
-		System.out.println(bookingType);
 		if(bookingType.equals("Flight")){
-			System.out.println("In flight");
 			List<Object[]> list = flightBookingRepository.getBookings(customerId);
 			List<VehicleBookingDetails> flightBookingDetailsList = new ArrayList<>();
 			for(Object[] obj : list) {
@@ -49,12 +46,11 @@ public class CustomerBookingService {
 				LocalDate bdate = LocalDate.parse(obj[1].toString());
 				String source = obj[2].toString();
 				String destination = obj[3].toString();
-				String type = obj[4].toString();
-				String flightName = obj[5].toString();
-				String flightNumber = obj[6].toString();
-				double amount = (double) obj[7];
-				String status = obj[8].toString();
-				VehicleBookingDetails flightBookingDetails = new VehicleBookingDetails(bookingId, bdate, source, destination, type, flightName, flightNumber, amount, status);
+				String flightName = obj[4].toString();
+				String flightNumber = obj[5].toString();
+				double amount = (double) obj[6];
+				String status = obj[7].toString();
+				VehicleBookingDetails flightBookingDetails = new VehicleBookingDetails(bookingId, bdate, source, destination, flightName, flightNumber, amount, status);
 				flightBookingDetailsList.add(flightBookingDetails);
 			}
 			
@@ -64,7 +60,7 @@ public class CustomerBookingService {
 			}else if(bookingPeriod.equals("Upcoming")) {
 				List<VehicleBookingDetails> filteredUpcomingFlightDetailList = flightBookingDetailsList.stream().filter(detail -> !detail.getStatus().equals("Cancelled") && detail.getBooking().isAfter(LocalDate.now()) || detail.getBooking().isEqual(LocalDate.now())).toList();
 				return filteredUpcomingFlightDetailList;
-			}else {
+			}else{
 				List<VehicleBookingDetails> filteredCancelledFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getStatus().equals("Cancelled")).toList();
 				return filteredCancelledFlightDetailList;
 			}
@@ -108,18 +104,19 @@ public class CustomerBookingService {
 		
 	}
 
-	public Object cancelBooking(String bookingType, int bid, int customerId) throws InputValidationException {
+	public void cancelBooking(String bookingType, int bid) throws InputValidationException {
 		if(bookingType.equals("Bus")) {
 			BusBooking busBooking = busBookingService.getById(bid);
 			busBooking.setStatus("Cancelled");
-			return busSeatBookingRepository.deleteSeats(bid);
+			busBookingRepository.save(busBooking);
+//			return busSeatBookingRepository.deleteSeats(bid);
 		} else if(bookingType.equals("Flight")) {
+			System.out.println("In flight cancellation");
 			FlightBooking flightBooking = flightBookingService.getById(bid);
 			flightBooking.setStatus("Cancelled");
-			return flightSeatBookingRepository.deleteSeats(bid);
+			flightBookingRepository.save(flightBooking);
+//			return flightSeatBookingRepository.deleteSeats(bid);
 		}
-		
-		return null;
 	}
 
 

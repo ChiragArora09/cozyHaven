@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.model;
 
+import com.group_3.cozyHaven.enums.BooleanType;
 import com.group_3.cozyHaven.enums.OfferType;
 
 import jakarta.persistence.Entity;
@@ -14,7 +15,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "flight_offer")
 public class FlightOffer {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -32,8 +33,15 @@ public class FlightOffer {
 	private Flight flight;
 	
 	private int loyaltyPoints;
-
 	
+	@Enumerated(EnumType.STRING)
+	private BooleanType active = BooleanType.YES;
+	
+	public FlightOffer() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public FlightOffer(int id, String description, OfferType offerType, int offerDiscount, double offerCondition,
 			Flight flight, int loyaltyPoints) {
 		super();
@@ -100,6 +108,14 @@ public class FlightOffer {
 
 	public void setLoyaltyPoints(int loyaltyPoints) {
 		this.loyaltyPoints = loyaltyPoints;
+	}
+	
+	public BooleanType getActive() {
+		return active;
+	}
+
+	public void setActive(BooleanType active) {
+		this.active = active;
 	}
 	
 }

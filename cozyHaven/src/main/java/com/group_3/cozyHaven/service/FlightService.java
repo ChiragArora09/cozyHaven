@@ -16,7 +16,9 @@ import com.group_3.cozyHaven.enums.ClassType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Flight;
+import com.group_3.cozyHaven.model.FlightCity;
 import com.group_3.cozyHaven.model.ServiceProvider;
+import com.group_3.cozyHaven.repository.FlightCityRepository;
 import com.group_3.cozyHaven.repository.FlightRepository;
 
 @Service
@@ -27,10 +29,14 @@ public class FlightService {
 	
 	@Autowired
 	private FlightRepository flightRepository;
+
+	@Autowired
+	private FlightCityRepository flightCityRepository;
 	
 	public Flight addFlight(int serviceProviderId, Flight flight) throws InputValidationException {
 		ServiceProvider serviceProvider = serviceProviderService.getById(serviceProviderId); // finding service provider by serviceProviderId
 		flight.setServiceProvider(serviceProvider);
+		flight.setStatus("Running");
 		return flightRepository.save(flight);
 	}
 
@@ -137,5 +143,21 @@ public class FlightService {
 			offerList.add(offerDto);
 		}
 		return offerList;
+	}
+
+	public List<Flight> getFlights(int serviceProviderId) throws InputValidationException {
+		List<Flight> flightList = flightRepository.findAll();
+		
+//		ServiceProvider serviceProvider = serviceProviderService.getById(serviceProviderId);
+		
+		List<Flight> filteredFlights = flightList.stream()
+                .filter(flight -> flight.getServiceProvider().getId() == serviceProviderId)
+                .toList();
+		
+		return filteredFlights;
+	}
+
+	public List<FlightCity> getCities() {
+		return flightCityRepository.findAll();
 	}
 }

@@ -19,7 +19,7 @@ public interface FlightSeatBookingRepository extends JpaRepository<FlightSeatBoo
 	@Query("DELETE FROM FlightSeatBooking fsb WHERE fsb.flightBooking.id=?1")
 	Object deleteSeats(int bid);
 
-	@Query("select sum(flp.total) FROM FlightLoyaltyPoints flp WHERE flp.serviceProvider.id=?1 AND flp.customer.id=?2")
+	@Query(value="select SUM(flp.total) FROM flight_loyalty_points flp WHERE service_provider_id=?1 AND customer_id=?2", nativeQuery = true)
 	List<Object[]> getLoyaltyPoints(int serviceProviderId, int customerId);
 
 }

@@ -83,6 +83,10 @@ public class CustomerService {
 		return option.get();
 	}
 
+	public void save(Customer customer) {
+		customerRepository.save(customer);
+	}
+
 
 
    

@@ -1,6 +1,7 @@
 package com.group_3.cozyHaven.service;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,12 +112,14 @@ public class FlightSeatBookingService {
 		List<Object[]> list = flightBookingRepository.getProviderIdFromBookingId(bid);
 		Object[] id = list.get(0);
 		int serviceProviderId = (int) id[0];
+		System.out.println(serviceProviderId);
+		System.out.println(customerId);
 		
 		list = flightSeatBookingRepository.getLoyaltyPoints(serviceProviderId, customerId);
 		Object[] points = list.get(0);
-		long totalPoints = (long) points[0];
+		BigDecimal totalPoints = (BigDecimal) points[0];
 		
-		return totalPoints;
+		return (totalPoints != null) ? totalPoints.intValue() : 0;
 	}
 
 
