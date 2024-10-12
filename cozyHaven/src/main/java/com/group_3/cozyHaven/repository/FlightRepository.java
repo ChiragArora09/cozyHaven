@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.group_3.cozyHaven.enums.ClassType;
 import com.group_3.cozyHaven.model.Flight;
+import com.group_3.cozyHaven.model.FlightCity;
 
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
@@ -25,4 +26,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
 	@Query("SELECT f FROM Flight f WHERE f.serviceProvider.id=?1")
 	List<Object[]> getFlights(int serviceProviderId);
+
+	@Query("SELECT fc from FlightCity fc WHERE fc.flight.id=?1")
+	List<FlightCity> getFlightRoute(int flightId);
 }

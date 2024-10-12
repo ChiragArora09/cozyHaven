@@ -44,17 +44,27 @@ public class CustomerBookingController {
 		return ResponseEntity.ok(myBookings);
 	}
 	
+	// CANCEL BOOKING
 	@PostMapping("/{bookingType}/upcoming/{bid}/delete")
 	public void cancelBooking(@PathVariable String bookingType, @PathVariable int bid) throws InputValidationException{
 		customerBookingService.cancelBooking(bookingType, bid);
 	}
 	
+	// SUBMIT FEEDBACK
 	@PostMapping("/submit-feedback")
 	public ResponseEntity<?> submitFeedback(Principal principal, @RequestBody ReviewInputDto dto) throws InputValidationException{
 		String customerUsername = principal.getName();
 		int customerId = getId.getIdByUsername(customerUsername);
 		return ResponseEntity.ok(flightReviewService.addFeedback(customerId, dto));
 	}
+	
+	@GetMapping("/generated-offers/{bid}")
+	public List<?> generateOffers(Principal principal, @PathVariable int bid) {
+		String customerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(customerUsername);
+		return customerBookingService.generateOffers(customerId, bid);
+	}
+	
 	
 	
 }

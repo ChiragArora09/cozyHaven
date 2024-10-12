@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.internal.util.beans.BeanInfoHelper.ReturningBeanInfoDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
+import com.group_3.cozyHaven.dto.FlightCityInputDto;
+import com.group_3.cozyHaven.dto.FlightClassesAndSeatsDto;
 import com.group_3.cozyHaven.dto.FlightInputDto;
 import com.group_3.cozyHaven.dto.FlightPayment;
 import com.group_3.cozyHaven.dto.MakePaymentDto;
 import com.group_3.cozyHaven.dto.MessageDto;
+import com.group_3.cozyHaven.dto.ReviewOnFlight;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.City;
@@ -36,6 +38,7 @@ import com.group_3.cozyHaven.model.FlightTraveller;
 import com.group_3.cozyHaven.service.FlightBookingService;
 import com.group_3.cozyHaven.service.FlightCityService;
 import com.group_3.cozyHaven.service.FlightClassService;
+import com.group_3.cozyHaven.service.FlightReviewService;
 import com.group_3.cozyHaven.service.FlightSeatBookingService;
 import com.group_3.cozyHaven.service.FlightSeatService;
 import com.group_3.cozyHaven.service.FlightService;
@@ -71,6 +74,9 @@ public class FlightController {
 	
 	@Autowired
 	private FlightSeatBookingService flightSeatBookingService;
+	
+	@Autowired
+	private FlightReviewService flightReviewService;
 	
 	@Autowired
 	private GetId getId;
@@ -117,14 +123,26 @@ public class FlightController {
 	}
 	
 	// ADDING FLIGHT AND ITS STOPS
-	@PostMapping("/add/flight-city/{flightid}/{cityid}")
-	public ResponseEntity<?> addBusAndItsStop(@PathVariable int flightid, @PathVariable int cityid, @RequestBody FlightCity flightCity, MessageDto dto){
+	@PostMapping("/add/flight-city/{flightid}")
+	public ResponseEntity<?> addFlightAndItsStop(@PathVariable int flightid, @RequestBody List<FlightCityInputDto> flightCityInputDto, MessageDto dto){
 		try {
-			flightCity = flightCityService.addFlightAndCity(flightid, cityid, flightCity);
-			return ResponseEntity.ok(flightCity); 
+			System.out.println(flightid);
+			return ResponseEntity.ok(flightCityService.addFlightAndCity(flightid, flightCityInputDto));
 		} catch (InvalidIdException e) {
 			dto.setMsg(e.getMessage());
 			return ResponseEntity.badRequest().body(dto); 
+		}
+	}
+	
+	// UPDATING FLIGHT AND ITS STOPS
+	@PostMapping("/update/flight-city/{flightid}")
+	public void updateFlightAndItsStop(@PathVariable int flightid, @RequestBody List<FlightCityInputDto> flightCityInputDto, MessageDto dto){
+		try {
+			System.out.println(flightid);
+			flightCityService.updateFlightAndCity(flightid, flightCityInputDto);
+		} catch (InvalidIdException e) {
+			dto.setMsg(e.getMessage());
+			System.out.println(dto.getMsg()); 
 		}
 	}
 	
@@ -142,10 +160,9 @@ public class FlightController {
 	
 	// ADDING SEATS TO A FLIGHT
 	@PostMapping("/add-flight-seat/{cid}") // class id
-	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody FlightSeat flightSeat, MessageDto dto){
+	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody List<FlightSeat> flightSeats, MessageDto dto){
 		try {
-			flightSeat = flightSeatService.addFlightSeat(cid, flightSeat);
-			return ResponseEntity.ok(flightSeat); 
+			return ResponseEntity.ok(flightSeatService.addFlightSeat(cid, flightSeats)); 
 		} catch (InvalidIdException e) {
 			dto.setMsg(e.getMessage());
 			return ResponseEntity.badRequest().body(dto); 
@@ -229,8 +246,26 @@ public class FlightController {
 	
 	// GET ALL OFFERS FOR A PARTICULAR FLIGHT
 	@GetMapping("/getAllOffers/{flightId}")
-	public List<FlightOffer> getOffers(@PathVariable int flightId) {
+	public List<?> getOffers(@PathVariable int flightId) {
 		return flightBookingService.getAllOffers(flightId);
 	}
+	
+	// GET ROUTE OF PARTICULAR FLIGHT BY FLIGHT ID
+	@GetMapping("/getRoute/{flightId}")
+	public List<FlightCity> getFlightRoutes(@PathVariable int flightId) {
+		return flightService.getFlightRoute(flightId);
+	}
 		
+	// GET FLIGHT CLASSES AND SEATS BY FLIGHT ID
+	@GetMapping("/classesAndFlights/{flightId}")
+	public List<FlightClassesAndSeatsDto> getClassesAndSeats(@PathVariable int flightId) {
+		return flightClassService.getClassesAndSeats(flightId);
+	}
+	
+	// GET REVIEWS ON MY FLIGHTS
+	@GetMapping("/reviews-on-flight/{flightId}")
+	public List<ReviewOnFlight> getReviewsOnParticularFlight(@PathVariable int flightId) {
+		return flightReviewService.getReviewsOnParticularFlight(flightId);
+	}
+	
 }

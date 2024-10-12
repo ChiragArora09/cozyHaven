@@ -8,5 +8,4 @@ import com.group_3.cozyHaven.model.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
-
 }

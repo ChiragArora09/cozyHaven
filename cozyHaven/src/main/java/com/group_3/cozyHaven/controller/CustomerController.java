@@ -9,6 +9,7 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +67,13 @@ public class CustomerController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@GetMapping("my-info")
+	public Customer getCustomerInfo(Principal principal) throws InputValidationException {
+		String CustomerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(CustomerUsername);
+		return customerService.getById(customerId);
 	}
 	
 	

@@ -1,9 +1,13 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.group_3.cozyHaven.dto.ReviewInputDto;
+import com.group_3.cozyHaven.dto.ReviewOnFlight;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.FlightBooking;
@@ -31,6 +35,24 @@ public class FlightReviewService {
 		FlightReview flightReview = new FlightReview(description, start, flightBooking, customer);
 		
 		return flightReviewRepository.save(flightReview);
+	}
+
+	public List<ReviewOnFlight> getReviewsOnParticularFlight(int flightId) {
+		List<Object[]> list = flightReviewRepository.getReviewsOnParticularFlight(flightId);
+		List<ReviewOnFlight> reviewList = new ArrayList<>();
+		for(Object[] obj : list) {
+			int bookingId = (int) obj[0];
+			String description = obj[1].toString();
+			int rating = (int) obj[2];
+			String date = obj[3].toString();
+			String source = obj[4].toString();
+			String destination = obj[5].toString();
+			String customerName = obj[6].toString();
+			String email = obj[7].toString();
+			ReviewOnFlight reviewOnFlight = new ReviewOnFlight(bookingId, description, rating, date, source, destination, customerName, email);
+			reviewList.add(reviewOnFlight);
+		}
+		return reviewList;
 	}
 	
 }

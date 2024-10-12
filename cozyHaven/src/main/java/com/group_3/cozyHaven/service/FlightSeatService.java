@@ -28,10 +28,16 @@ public class FlightSeatService {
 	@Autowired
 	private FlightBookingService flightBookingService;
 	
-	public FlightSeat addFlightSeat(int classId, FlightSeat flightSeat) throws InvalidIdException {
+	public List<FlightSeat> addFlightSeat(int classId, List<FlightSeat> flightSeats) throws InvalidIdException {
 		FlightClass flightClass =  flightClassService.findById(classId); // finding flight by flightId
-		flightSeat.setFlightClass(flightClass); // inserting id into flightClass
-		return flightSeatRepository.save(flightSeat);
+		List<FlightSeat> flightSeatList = new ArrayList<>();
+		
+		for(FlightSeat flightSeat : flightSeats) {
+			flightSeat.setFlightClass(flightClass);
+			flightSeatList.add(flightSeat);
+		}
+		flightSeatRepository.saveAll(flightSeatList);
+		return flightSeatList;
 	}
 
 

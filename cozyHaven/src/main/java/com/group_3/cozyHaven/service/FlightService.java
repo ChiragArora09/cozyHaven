@@ -160,4 +160,8 @@ public class FlightService {
 	public List<FlightCity> getCities() {
 		return flightCityRepository.findAll();
 	}
+
+	public List<FlightCity> getFlightRoute(int flightId) {
+		return flightRepository.getFlightRoute(flightId);
+	}
 }

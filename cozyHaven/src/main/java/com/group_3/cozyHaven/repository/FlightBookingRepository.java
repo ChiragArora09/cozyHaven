@@ -15,4 +15,7 @@ public interface FlightBookingRepository extends JpaRepository<FlightBooking, In
 	@Query("select sp.id FROM FlightSeatBooking fsb JOIN fsb.flightBooking fb JOIN fsb.flightSeat fs JOIN fs.flightClass fc JOIN fc.flight f JOIN f.serviceProvider sp WHERE fb.id=?1")
 	List<Object[]> getProviderIdFromBookingId(int bid);
 
+	@Query(value = "SELECT * FROM flight_booking WHERE customer_id=?1", nativeQuery = true)
+	List<Object[]> getMyBookings(int customerId);
+
 }

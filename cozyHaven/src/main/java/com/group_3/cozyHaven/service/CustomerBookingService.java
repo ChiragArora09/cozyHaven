@@ -1,12 +1,15 @@
 package com.group_3.cozyHaven.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.OfferDto;
 import com.group_3.cozyHaven.dto.VehicleBookingDetails;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.BusBooking;
@@ -119,5 +122,61 @@ public class CustomerBookingService {
 		}
 	}
 
-
+	public List<?> generateOffers(int customerId, int bid) {
+		List<OfferDto> offersList = new ArrayList<>();
+		
+		List<Object[]> list = flightBookingRepository.getMyBookings(customerId); // list of bookings for this customer
+		double totalAmount = 0;
+		Object[] currentBooking = list.get(list.size()-1);
+		double currentBookingAmount = (double) currentBooking[1];
+		System.out.println("Current Booking amount: " +currentBookingAmount);
+		if(list.size()==1) {
+			OfferDto offerDto = new OfferDto(bid, "FIRST BOOKING DISCOUNT", "percentage", 30, 0, 100);
+			offersList.add(offerDto);
+		}else {
+			for(Object[] obj : list) {
+				double amount = (double) obj[1];
+				totalAmount+=amount;
+			}
+			System.out.println("TOTAL AMOUNT:" + totalAmount);
+			double average = (totalAmount-currentBookingAmount)/(list.size()-1);
+			System.out.println("AVERAGE" + average);
+			
+			if(currentBookingAmount > average) {
+				System.out.println("Creating consistency discount");
+				OfferDto offerDto  = new OfferDto(bid, "CONSISTENCY DISCOUNT", "percentage", 10, 0, 200);
+				offersList.add(offerDto);
+			}
+		}
+		
+		LocalDate bookingDate = LocalDate.parse(currentBooking[2].toString());
+		
+		System.out.println(bookingDate);
+		
+		int month = bookingDate.getMonthValue();
+		System.out.println("MONTH = " + month);
+		
+		if(month == 2 || month == 3) {
+			System.out.println("Creating Off season discount");
+			OfferDto offerDto  = new OfferDto(bid, "OFF SEASON DISCOUNT", "percentage", 10, 0, 100);
+			offersList.add(offerDto);
+		}
+		
+		LocalDate presentDate = LocalDate.now();
+		int monthValue = presentDate.getMonthValue();
+		System.out.println(monthValue);
+		
+		long daysBetween = ChronoUnit.DAYS.between(presentDate, bookingDate);
+		System.out.println(daysBetween);
+		if(daysBetween > 60) {
+			System.out.println("Creating Early Bird discount");
+			OfferDto offerDto  = new OfferDto(bid, "EARLY BIRD DISCOUNT", "percentage", 15, 0, 0);
+			offersList.add(offerDto);
+		}
+		
+		OfferDto offerDto  = new OfferDto(bid, "EARN POINTS ON THIS BOOKING", "percentage", 0, 0, 50);
+		offersList.add(offerDto);
+		
+		return offersList;
+	}
 }
