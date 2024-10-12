@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ import com.group_3.cozyHaven.model.FlightTraveller;
 import com.group_3.cozyHaven.service.FlightBookingService;
 import com.group_3.cozyHaven.service.FlightCityService;
 import com.group_3.cozyHaven.service.FlightClassService;
+import com.group_3.cozyHaven.service.FlightOfferService;
 import com.group_3.cozyHaven.service.FlightReviewService;
 import com.group_3.cozyHaven.service.FlightSeatBookingService;
 import com.group_3.cozyHaven.service.FlightSeatService;
@@ -77,6 +79,9 @@ public class FlightController {
 	
 	@Autowired
 	private FlightReviewService flightReviewService;
+
+	@Autowired
+	private FlightOfferService flightOfferService;
 	
 	@Autowired
 	private GetId getId;
@@ -244,10 +249,21 @@ public class FlightController {
 		return points;
 	}
 	
-	// GET ALL OFFERS FOR A PARTICULAR FLIGHT
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT ON CUSTOMER UI
 	@GetMapping("/getAllOffers/{flightId}")
 	public List<?> getOffers(@PathVariable int flightId) {
 		return flightBookingService.getAllOffers(flightId);
+	}
+	
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT ON CUSTOMER UI
+	@GetMapping("/getMyFlightOffers/{flightId}")
+	public List<?> getMyFlightOffers(@PathVariable int flightId) {
+		return flightBookingService.getMyFlightOffers(flightId);
+	}
+	
+	@PutMapping("/changeOfferStatus/{offerId}")
+	public FlightOffer changeOfferStatus(@PathVariable int offerId) {
+		return flightOfferService.changeStatus(offerId);
 	}
 	
 	// GET ROUTE OF PARTICULAR FLIGHT BY FLIGHT ID
@@ -266,6 +282,24 @@ public class FlightController {
 	@GetMapping("/reviews-on-flight/{flightId}")
 	public List<ReviewOnFlight> getReviewsOnParticularFlight(@PathVariable int flightId) {
 		return flightReviewService.getReviewsOnParticularFlight(flightId);
+	}
+	
+	// CREATE AN OFFER FOR A FLIGHT
+	@PostMapping("/create-offer/{flightId}")
+	public FlightOffer createOfferForFlight(@PathVariable int flightId, @RequestBody FlightOffer flightOffer) throws InvalidIdException {
+		return flightOfferService.createOffer(flightId, flightOffer);
+	}
+	
+	// GET OFFER DETAILS BY ID
+	@GetMapping("offer-details/{offerId}")
+	public FlightOffer getOfferDetails(@PathVariable int offerId) {
+		return flightOfferService.getOfferDetails(offerId);
+	}
+	
+	// EDIT AN OFFER
+	@PutMapping("/offer-edit/{offerId}")
+	public FlightOffer editOffer(@PathVariable int offerId, @RequestBody FlightOffer flightOffer) {
+		return flightOfferService.editOffer(offerId, flightOffer);
 	}
 	
 }

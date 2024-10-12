@@ -1,7 +1,10 @@
 package com.group_3.cozyHaven.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import com.group_3.cozyHaven.model.City;
 import com.group_3.cozyHaven.model.Flight;
 import com.group_3.cozyHaven.model.FlightCity;
 import com.group_3.cozyHaven.repository.FlightCityRepository;
+import com.group_3.cozyHaven.repository.FlightRepository;
 
 @Service
 public class FlightCityService {
@@ -50,7 +54,21 @@ public class FlightCityService {
 		
 	}
 
+	// 1 2 3 4
+	// 1 3 4 5
 	public void updateFlightAndCity(int flightid, List<FlightCityInputDto> flightCityInputDto) throws InvalidIdException {
+		List<FlightCity> alreadyInDB = flightCityRepository.findByFlightId(flightid);
+		
+		Set<Integer> existingIds = alreadyInDB.stream().map(FlightCity::getId).collect(Collectors.toSet());
+		Set<Integer> incomingIds = flightCityInputDto.stream().filter(dto -> dto.getId() != null).map(FlightCityInputDto::getId).collect(Collectors.toSet());
+		Set<Integer> idsToDelete = new HashSet<>(existingIds);
+        idsToDelete.removeAll(incomingIds);
+        List<Integer> idsToDeleteList = new ArrayList<>(idsToDelete);
+        if (!idsToDeleteList.isEmpty()) {
+            flightCityRepository.deleteAllById(idsToDeleteList);
+            System.out.println("Deleted FlightCity IDs: " + idsToDeleteList);
+        }
+		
 		Flight flight = flightService.findById(flightid);
         for (FlightCityInputDto dto : flightCityInputDto) {
         	if(dto.getId() != null) {

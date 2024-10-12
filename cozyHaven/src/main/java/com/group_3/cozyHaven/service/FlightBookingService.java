@@ -64,4 +64,12 @@ public class FlightBookingService {
 		return filteredFlightOffers;
 	}
 
+	public List<?> getMyFlightOffers(int flightId) {
+		List<FlightOffer> offers = flightOfferRepository.findAll();
+		List<FlightOffer> filteredFlightOffers = offers.stream()
+                .filter(offer -> offer.getFlight().getId() == flightId)
+                .toList();
+		return filteredFlightOffers;
+	}
+
 }
