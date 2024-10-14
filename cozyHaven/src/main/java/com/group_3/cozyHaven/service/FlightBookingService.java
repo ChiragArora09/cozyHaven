@@ -14,7 +14,6 @@ import com.group_3.cozyHaven.dto.PopularFlightsDto;
 import com.group_3.cozyHaven.enums.BooleanType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.Customer;
-import com.group_3.cozyHaven.model.Flight;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightOffer;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
@@ -136,6 +135,18 @@ public class FlightBookingService {
 			flightRevenueDtos.add(flightRevenueDto);
 		}
 		return flightRevenueDtos;
+	}
+
+	public List<PopularFlightsDto> getPopularRoutes(int serviceProviderId) { // REUSING POPULAR FLIGHTS DTO FOR POPULAR ROUTES
+		List<Object[]> list = flightBookingRepository.getPopularRoutes(serviceProviderId);
+		List<PopularFlightsDto> popularFlightsDtos = new ArrayList<>();
+		for(Object[] obj : list) {
+			long bookings = (long) obj[0];
+			String route = obj[1].toString();
+			PopularFlightsDto popularFlightsDto = new PopularFlightsDto(bookings, route);
+			popularFlightsDtos.add(popularFlightsDto);
+		}
+		return popularFlightsDtos;
 	}
 
 }

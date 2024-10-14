@@ -302,4 +302,10 @@ public class FlightController {
 		return flightOfferService.editOffer(offerId, flightOffer);
 	}
 	
+	// CHANGE FLIGHT STATUS
+	@PutMapping("/flight-status/{flightId}")
+	public void changeFlightStatus(@PathVariable int flightId) {
+		flightService.changeStatus(flightId);
+	}
+	
 }
