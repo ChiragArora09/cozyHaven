@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -81,6 +82,10 @@ public class CustomerService {
 			throw new InputValidationException("Invalid ID");
 		}
 		return option.get();
+	}
+
+	public void save(Customer customer) {
+		customerRepository.save(customer);
 	}
 
 

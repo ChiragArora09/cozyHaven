@@ -14,6 +14,22 @@ public class VehicleBookingDetails {
 	private double amount;
 	private String status;
 	
+	
+	
+	public VehicleBookingDetails(int bookingId, LocalDate booking, String source, String destination,
+			String vehicleName, String vehicleNumber, double amount, String status) {
+		super();
+		this.bookingId = bookingId;
+		this.booking = booking;
+		this.source = source;
+		this.destination = destination;
+		this.vehicleName = vehicleName;
+		this.vehicleNumber = vehicleNumber;
+		this.amount = amount;
+		this.status = status;
+	}
+
+
 	public VehicleBookingDetails(int bookingId, LocalDate booking, String source, String destination, String classtype,
 			String vehicleName, String vehicleNumber, double amount, String status) {
 		super();

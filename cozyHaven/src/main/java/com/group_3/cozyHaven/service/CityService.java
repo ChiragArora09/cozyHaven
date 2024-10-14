@@ -1,5 +1,6 @@
 package com.group_3.cozyHaven.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +25,9 @@ public class CityService {
 
 	public City addCity(City city) {
 		return cityRepository.save(city);
+	}
+	
+	public List<City> getAll() {
+		return cityRepository.findAll();
 	}
 }

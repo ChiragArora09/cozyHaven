@@ -21,8 +21,8 @@ public interface BookingRepository extends JpaRepository<Booking,Integer>{
 	 @Query("select br from Booking br where br.room.id=?1 and br.status='CONFIRMED'and (br.checkInDate<?3 and br.checkOutDate>?2)")
 	 List<Booking> findOverlappingBookings(int roomId, LocalDate checkInDate, LocalDate checkOutDate);
  
-     @Query("select b from Booking b where b.id=?2 AND b.customer.id =?1")
-	 Optional<Booking> findByBookedDate(int customerId,int bookingId);
+     @Query("select b from Booking b where b.id=?1")
+	 Optional<Booking> findByBookedDate(int bookingId);
 
 	 @Query("select br.id,br.bookedDate,br.checkInDate,br.checkOutDate,br.numberOfRooms,br.numGuests,br.totalAmount,br.status,h.hotelName,h.location,h.id from Booking br join br.room hrt join hrt.hotel h where br.customer.id=?1")
 	List<Object[]> findAllBooking(int customerId);

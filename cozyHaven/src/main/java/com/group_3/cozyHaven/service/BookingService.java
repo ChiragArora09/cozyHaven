@@ -100,9 +100,9 @@ public class BookingService {
 
 
 
-	public Booking cancelBooking(int customerId,int bookingId) throws InvalidIdException {
-		
-		Optional<Booking> bookingOpt = bookingRepository.findByBookedDate(customerId,bookingId);
+	public Booking cancelBooking(int bookingId,String bookingType) throws InvalidIdException {
+		if(bookingType.equals("Hotel")) {
+		Optional<Booking> bookingOpt = bookingRepository.findByBookedDate(bookingId);
 		if (bookingOpt.isEmpty()) {
 			throw new InvalidIdException("No booking made");
 		}
@@ -117,6 +117,8 @@ public class BookingService {
 		room.setBookedRooms(room.getBookedRooms()-1);
 		roomRepository.save(room);
 		return booking;
+	}
+		return null;
 	}
 	
 	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {

@@ -71,12 +71,10 @@ public class BookingController {
 	}
 	
 	
-	@PutMapping("/cancel/{bookingId}")
-	public ResponseEntity<?> cancelBooking(Principal principal,@PathVariable int bookingId) {
+	@PutMapping("/cancel/{bookingType}/upcoming/{bookingId}")
+	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId,@PathVariable String bookingType) {
 	    try {
-	    	String username=principal.getName();
-	    	int customerId=getId.getIdByUsername(username);
-	        Booking booked = bookingService.cancelBooking(customerId, bookingId);
+	        Booking booked = bookingService.cancelBooking(bookingId,bookingType);
 	        return ResponseEntity.ok(booked);
 	    } catch (InvalidIdException e) {
 	        return ResponseEntity.badRequest().body(e.getMessage());

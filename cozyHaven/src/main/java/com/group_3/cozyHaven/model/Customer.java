@@ -26,8 +26,6 @@ public class Customer {
 	
 	private String address;
 	
-	private String profilePicture;
-	
 	@Enumerated(EnumType.STRING)
 	private IdType idType;
 	
@@ -35,6 +33,11 @@ public class Customer {
 	
 	@OneToOne
 	private User user;
+	
+	private String profilePicture;
+	
+	private String imagePath;
+	
 
 	public int getId() {
 		return id;
@@ -76,14 +79,6 @@ public class Customer {
 		this.address = address;
 	}
 
-	public String getProfilePicture() {
-		return profilePicture;
-	}
-
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
-	}
-
 	public IdType getIdType() {
 		return idType;
 	}
@@ -108,12 +103,30 @@ public class Customer {
 		this.user = user;
 	}
 
-	@Override
-	public String toString() {
-		return "Customer [id=" + id + ", fullname=" + fullname + ", email=" + email + ", contactNumber=" + contactNumber
-				+ ", address=" + address + ", profilePicture=" + profilePicture + ", idType=" + idType + ", idNumber="
-				+ idNumber + ", user=" + user + "]";
+	public String getProfilePicture() {
+		return profilePicture;
 	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+	
+	
+
+//	@Override
+//	public String toString() {
+//		return "Customer [id=" + id + ", fullname=" + fullname + ", email=" + email + ", contactNumber=" + contactNumber
+//				+ ", address=" + address + ", profilePicture=" + ", idType=" + idType + ", idNumber="
+//				+ idNumber + ", user=" + user + "]";
+//	}
 	
 	
 

@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
+import com.group_3.cozyHaven.dto.OfferDto;
 import com.group_3.cozyHaven.enums.ClassType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Flight;
+import com.group_3.cozyHaven.model.FlightCity;
 import com.group_3.cozyHaven.model.ServiceProvider;
+import com.group_3.cozyHaven.repository.FlightCityRepository;
 import com.group_3.cozyHaven.repository.FlightRepository;
 
 @Service
@@ -26,10 +29,14 @@ public class FlightService {
 	
 	@Autowired
 	private FlightRepository flightRepository;
+
+	@Autowired
+	private FlightCityRepository flightCityRepository;
 	
 	public Flight addFlight(int serviceProviderId, Flight flight) throws InputValidationException {
 		ServiceProvider serviceProvider = serviceProviderService.getById(serviceProviderId); // finding service provider by serviceProviderId
 		flight.setServiceProvider(serviceProvider);
+		flight.setStatus("Running");
 		return flightRepository.save(flight);
 	}
 
@@ -60,10 +67,10 @@ public class FlightService {
 			Object[] destinationInfo = flightInfo.get(1); // Fetched 2nd row is for destination
 	/*		
 			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
-			| arrival         | departure       | distance | name   | number      | description                          | city_name | id | stop_number |
+			| arrival         | departure        | distance | name   | number      | description                          | city_name | id | stop_number |
 			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
-			| 08:00:00.000000 | 10:00:00.000000 |        0 | Indigo | Indigo 2100 | The fastest and the most comfortable | Delhi     |  1 |           0 |
-			| 13:30:00.000000 | 14:30:00.000000 |      200 | Indigo | Indigo 2100 | The fastest and the most comfortable | Pune      |  1 |           2 |
+			| 08:00:00.000000 | 10:00:00.000000 |        00 | Indigo | Indigo 2100 | The fastest and the most comfortable | Delhi     |  1 |           0 |
+			| 13:30:00.000000 | 14:30:00.000000 |      1500 | Indigo | Indigo 2100 | The fastest and the most comfortable | Pune      |  1 |           2 |
 			+-----------------+-----------------+----------+--------+-------------+--------------------------------------+-----------+----+-------------+
 	*/		
 			String flightName = sourceInfo[3].toString();
@@ -80,8 +87,8 @@ public class FlightService {
 			
 			double fixedFare = 100;
 			double pricePerKm = 5;
-			double amount = distance * pricePerKm;
-			amount+=fixedFare;
+			double amount = distance * pricePerKm; // 7500
+			amount+=fixedFare; // 7600
 			
 			FlightBetweenStopsDto flightBetweenStopsDto = new FlightBetweenStopsDto(flightName, flightNumber, flightDescription, source1, destination1, sourceArrival, destinationArrival, distance, amount, flightId, sourceStopNumber, destinationStopNumber);
 //			(String flightName, String flightNumber, String flightDescription, String source, String destination, LocalTime sourceArrival, LocalTime destinationArrival, int distance, double amount, int flightId, int sourceStopNo, int destinationStopNo)
@@ -118,5 +125,43 @@ public class FlightService {
 		}	
 		return listDto; 
 
+	}
+
+	public List<?> getBookingOffers(int bid) {
+		List<Object[]> offers = flightRepository.getOffers(bid);
+		List<OfferDto> offerList = new ArrayList<>();
+		
+		for(Object[] obj : offers) {
+			int id = (int) obj[0];
+			String description = obj[1].toString();
+			double offerCondition = (double) obj[2];
+			int offerDiscount = (int) obj[3];
+			String offerType = obj[4].toString();
+			int loyaltyPoints = (int) obj[5];
+			
+			OfferDto offerDto = new OfferDto(id, description, offerType, offerDiscount, offerCondition, loyaltyPoints);
+			offerList.add(offerDto);
+		}
+		return offerList;
+	}
+
+	public List<Flight> getFlights(int serviceProviderId) throws InputValidationException {
+		List<Flight> flightList = flightRepository.findAll();
+		
+//		ServiceProvider serviceProvider = serviceProviderService.getById(serviceProviderId);
+		
+		List<Flight> filteredFlights = flightList.stream()
+                .filter(flight -> flight.getServiceProvider().getId() == serviceProviderId)
+                .toList();
+		
+		return filteredFlights;
+	}
+
+	public List<FlightCity> getCities() {
+		return flightCityRepository.findAll();
+	}
+
+	public List<FlightCity> getFlightRoute(int flightId) {
+		return flightRepository.getFlightRoute(flightId);
 	}
 }

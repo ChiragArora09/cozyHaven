@@ -52,7 +52,7 @@ public class ReviewService {
 		review.setStar(review.getStar());
 		review.setCustomer(customer);
 		review.setHotel(hotel);
-		review.setCustomer(customer);
+		//review.setCustomer(customer);
 		return reviewRepository.save(review);
 		
 		

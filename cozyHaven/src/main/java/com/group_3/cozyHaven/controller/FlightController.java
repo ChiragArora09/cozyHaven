@@ -11,15 +11,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group_3.cozyHaven.dto.BookingTicket;
 import com.group_3.cozyHaven.dto.FlightBetweenStopsDto;
+import com.group_3.cozyHaven.dto.FlightCityInputDto;
+import com.group_3.cozyHaven.dto.FlightClassesAndSeatsDto;
 import com.group_3.cozyHaven.dto.FlightInputDto;
 import com.group_3.cozyHaven.dto.FlightPayment;
+import com.group_3.cozyHaven.dto.MakePaymentDto;
 import com.group_3.cozyHaven.dto.MessageDto;
+import com.group_3.cozyHaven.dto.ReviewOnFlight;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.City;
@@ -27,12 +32,15 @@ import com.group_3.cozyHaven.model.Flight;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.model.FlightCity;
 import com.group_3.cozyHaven.model.FlightClass;
+import com.group_3.cozyHaven.model.FlightOffer;
 import com.group_3.cozyHaven.model.FlightSeat;
 import com.group_3.cozyHaven.model.FlightSeatBooking;
 import com.group_3.cozyHaven.model.FlightTraveller;
 import com.group_3.cozyHaven.service.FlightBookingService;
 import com.group_3.cozyHaven.service.FlightCityService;
 import com.group_3.cozyHaven.service.FlightClassService;
+import com.group_3.cozyHaven.service.FlightOfferService;
+import com.group_3.cozyHaven.service.FlightReviewService;
 import com.group_3.cozyHaven.service.FlightSeatBookingService;
 import com.group_3.cozyHaven.service.FlightSeatService;
 import com.group_3.cozyHaven.service.FlightService;
@@ -70,6 +78,12 @@ public class FlightController {
 	private FlightSeatBookingService flightSeatBookingService;
 	
 	@Autowired
+	private FlightReviewService flightReviewService;
+
+	@Autowired
+	private FlightOfferService flightOfferService;
+	
+	@Autowired
 	private GetId getId;
 	
 	
@@ -87,6 +101,14 @@ public class FlightController {
 		}
 	}
 	
+	// GET MY FLIGHTS
+	@GetMapping("/get-my-flights")
+	public List<Flight> getFlights(Principal principal) throws InputValidationException{
+		String serviceProviderUsername = principal.getName();
+		int serviceProviderId = getId.getIdByUsername(serviceProviderUsername);
+		return flightService.getFlights(serviceProviderId);
+	}
+	
 	// ADDING A CITY BY SERVICE PROVIDER
 	@PostMapping("/add-city")
 	public ResponseEntity<?> addCity(@RequestBody City city){
@@ -94,16 +116,38 @@ public class FlightController {
 		return ResponseEntity.ok(city);
 	}
 	
+	// GET ALL CITIES IN THE DATABASE
+	@GetMapping("/get-flight-cities")
+	public List<City> getFlightCitites(){
+		return cityService.getAll();
+	}
+	
+	@GetMapping("/get-cities")
+	public List<FlightCity> getCities() {
+		return flightService.getCities();
+	}
 	
 	// ADDING FLIGHT AND ITS STOPS
-	@PostMapping("/add/flight-city/{flightid}/{cityid}")
-	public ResponseEntity<?> addBusAndItsStop(@PathVariable int flightid, @PathVariable int cityid, @RequestBody FlightCity flightCity, MessageDto dto){
+	@PostMapping("/add/flight-city/{flightid}")
+	public ResponseEntity<?> addFlightAndItsStop(@PathVariable int flightid, @RequestBody List<FlightCityInputDto> flightCityInputDto, MessageDto dto){
 		try {
-			flightCity = flightCityService.addFlightAndCity(flightid, cityid, flightCity);
-			return ResponseEntity.ok(flightCity); 
+			System.out.println(flightid);
+			return ResponseEntity.ok(flightCityService.addFlightAndCity(flightid, flightCityInputDto));
 		} catch (InvalidIdException e) {
 			dto.setMsg(e.getMessage());
 			return ResponseEntity.badRequest().body(dto); 
+		}
+	}
+	
+	// UPDATING FLIGHT AND ITS STOPS
+	@PostMapping("/update/flight-city/{flightid}")
+	public void updateFlightAndItsStop(@PathVariable int flightid, @RequestBody List<FlightCityInputDto> flightCityInputDto, MessageDto dto){
+		try {
+			System.out.println(flightid);
+			flightCityService.updateFlightAndCity(flightid, flightCityInputDto);
+		} catch (InvalidIdException e) {
+			dto.setMsg(e.getMessage());
+			System.out.println(dto.getMsg()); 
 		}
 	}
 	
@@ -121,10 +165,9 @@ public class FlightController {
 	
 	// ADDING SEATS TO A FLIGHT
 	@PostMapping("/add-flight-seat/{cid}") // class id
-	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody FlightSeat flightSeat, MessageDto dto){
+	public ResponseEntity<?> addClassSeat(@PathVariable int cid, @RequestBody List<FlightSeat> flightSeats, MessageDto dto){
 		try {
-			flightSeat = flightSeatService.addFlightSeat(cid, flightSeat);
-			return ResponseEntity.ok(flightSeat); 
+			return ResponseEntity.ok(flightSeatService.addFlightSeat(cid, flightSeats)); 
 		} catch (InvalidIdException e) {
 			dto.setMsg(e.getMessage());
 			return ResponseEntity.badRequest().body(dto); 
@@ -184,5 +227,79 @@ public class FlightController {
 	public List<BookingTicket> getBookingReceipt(@PathVariable int bid) {
 		return flightService.getBookingTicket(bid);
 	}
+	
+	// GET OFFERS FOR A PARTICULAR BOOKING
+	@GetMapping("/get-offers/{bid}")
+	public List<?> getBookingOffers(@PathVariable int bid) {
+		return flightService.getBookingOffers(bid);
+	}
+	
+	// MAKE PAYMENT
+	@PostMapping("/{bid}/confirm-booking")
+	public void makePaymentAndConfirm(@PathVariable int bid, @RequestBody MakePaymentDto dto) {
+		flightBookingService.makePayment(bid, dto);
+	}
+	
+	// GET NUMBER OF LOYALTY POINTS TO APPLY IN FLIGHT BOOKING
+	@GetMapping("{bid}/loyalty-points")
+	public long getLoyaltyPoints(Principal principal, @PathVariable int bid) {
+		String CustomerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(CustomerUsername);
+		long points = flightSeatBookingService.getLoyaltyPoints(bid, customerId);
+		return points;
+	}
+	
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT ON CUSTOMER UI
+	@GetMapping("/getAllOffers/{flightId}")
+	public List<?> getOffers(@PathVariable int flightId) {
+		return flightBookingService.getAllOffers(flightId);
+	}
+	
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT SERVICE PROVIDER
+	@GetMapping("/getMyFlightOffers/{flightId}")
+	public List<?> getMyFlightOffers(@PathVariable int flightId) {
+		return flightBookingService.getMyFlightOffers(flightId);
+	}
+	
+	@PutMapping("/changeOfferStatus/{offerId}")
+	public FlightOffer changeOfferStatus(@PathVariable int offerId) {
+		return flightOfferService.changeStatus(offerId);
+	}
+	
+	// GET ROUTE OF PARTICULAR FLIGHT BY FLIGHT ID
+	@GetMapping("/getRoute/{flightId}")
+	public List<FlightCity> getFlightRoutes(@PathVariable int flightId) {
+		return flightService.getFlightRoute(flightId);
+	}
 		
+	// GET FLIGHT CLASSES AND SEATS BY FLIGHT ID
+	@GetMapping("/classesAndFlights/{flightId}")
+	public List<FlightClassesAndSeatsDto> getClassesAndSeats(@PathVariable int flightId) {
+		return flightClassService.getClassesAndSeats(flightId);
+	}
+	
+	// GET REVIEWS ON MY FLIGHTS
+	@GetMapping("/reviews-on-flight/{flightId}")
+	public List<ReviewOnFlight> getReviewsOnParticularFlight(@PathVariable int flightId) {
+		return flightReviewService.getReviewsOnParticularFlight(flightId);
+	}
+	
+	// CREATE AN OFFER FOR A FLIGHT
+	@PostMapping("/create-offer/{flightId}")
+	public FlightOffer createOfferForFlight(@PathVariable int flightId, @RequestBody FlightOffer flightOffer) throws InvalidIdException {
+		return flightOfferService.createOffer(flightId, flightOffer);
+	}
+	
+	// GET OFFER DETAILS BY ID
+	@GetMapping("offer-details/{offerId}")
+	public FlightOffer getOfferDetails(@PathVariable int offerId) {
+		return flightOfferService.getOfferDetails(offerId);
+	}
+	
+	// EDIT AN OFFER
+	@PutMapping("/offer-edit/{offerId}")
+	public FlightOffer editOffer(@PathVariable int offerId, @RequestBody FlightOffer flightOffer) {
+		return flightOfferService.editOffer(offerId, flightOffer);
+	}
+	
 }

@@ -22,6 +22,8 @@ public class Flight {
 	@ManyToOne
 	private ServiceProvider serviceProvider;
 
+	private String status = "Running";
+	
 	public int getId() {
 		return id;
 	}
@@ -61,5 +63,15 @@ public class Flight {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
 	
 }

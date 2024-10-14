@@ -1,20 +1,23 @@
 package com.group_3.cozyHaven.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.OfferDto;
 import com.group_3.cozyHaven.dto.VehicleBookingDetails;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.model.BusBooking;
 import com.group_3.cozyHaven.model.FlightBooking;
 import com.group_3.cozyHaven.repository.BusBookingRepository;
-import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
+//import com.group_3.cozyHaven.repository.BusSeatBookingRepository;
 import com.group_3.cozyHaven.repository.FlightBookingRepository;
-import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
+//import com.group_3.cozyHaven.repository.FlightSeatBookingRepository;
 
 @Service
 public class CustomerBookingService {
@@ -31,17 +34,14 @@ public class CustomerBookingService {
 	@Autowired
 	private FlightBookingService flightBookingService;
 	
-	@Autowired
-	private BusSeatBookingRepository busSeatBookingRepository;
-	
-	@Autowired
-	private FlightSeatBookingRepository flightSeatBookingRepository;
+//	@Autowired
+//	private BusSeatBookingRepository busSeatBookingRepository;
+//	
+//	@Autowired
+//	private FlightSeatBookingRepository flightSeatBookingRepository;
 
 	public List<?> getMyBookings(int customerId, String bookingType, String bookingPeriod) {
-		System.out.println(bookingPeriod);
-		System.out.println(bookingType);
 		if(bookingType.equals("Flight")){
-			System.out.println("In flight");
 			List<Object[]> list = flightBookingRepository.getBookings(customerId);
 			List<VehicleBookingDetails> flightBookingDetailsList = new ArrayList<>();
 			for(Object[] obj : list) {
@@ -49,12 +49,11 @@ public class CustomerBookingService {
 				LocalDate bdate = LocalDate.parse(obj[1].toString());
 				String source = obj[2].toString();
 				String destination = obj[3].toString();
-				String type = obj[4].toString();
-				String flightName = obj[5].toString();
-				String flightNumber = obj[6].toString();
-				double amount = (double) obj[7];
-				String status = obj[8].toString();
-				VehicleBookingDetails flightBookingDetails = new VehicleBookingDetails(bookingId, bdate, source, destination, type, flightName, flightNumber, amount, status);
+				String flightName = obj[4].toString();
+				String flightNumber = obj[5].toString();
+				double amount = (double) obj[6];
+				String status = obj[7].toString();
+				VehicleBookingDetails flightBookingDetails = new VehicleBookingDetails(bookingId, bdate, source, destination, flightName, flightNumber, amount, status);
 				flightBookingDetailsList.add(flightBookingDetails);
 			}
 			
@@ -64,7 +63,7 @@ public class CustomerBookingService {
 			}else if(bookingPeriod.equals("Upcoming")) {
 				List<VehicleBookingDetails> filteredUpcomingFlightDetailList = flightBookingDetailsList.stream().filter(detail -> !detail.getStatus().equals("Cancelled") && detail.getBooking().isAfter(LocalDate.now()) || detail.getBooking().isEqual(LocalDate.now())).toList();
 				return filteredUpcomingFlightDetailList;
-			}else {
+			}else{
 				List<VehicleBookingDetails> filteredCancelledFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getStatus().equals("Cancelled")).toList();
 				return filteredCancelledFlightDetailList;
 			}
@@ -108,19 +107,76 @@ public class CustomerBookingService {
 		
 	}
 
-	public Object cancelBooking(String bookingType, int bid, int customerId) throws InputValidationException {
+	public void cancelBooking(String bookingType, int bid) throws InputValidationException {
 		if(bookingType.equals("Bus")) {
 			BusBooking busBooking = busBookingService.getById(bid);
 			busBooking.setStatus("Cancelled");
-			return busSeatBookingRepository.deleteSeats(bid);
+			busBookingRepository.save(busBooking);
+//			return busSeatBookingRepository.deleteSeats(bid);
 		} else if(bookingType.equals("Flight")) {
+			System.out.println("In flight cancellation");
 			FlightBooking flightBooking = flightBookingService.getById(bid);
 			flightBooking.setStatus("Cancelled");
-			return flightSeatBookingRepository.deleteSeats(bid);
+			flightBookingRepository.save(flightBooking);
+//			return flightSeatBookingRepository.deleteSeats(bid);
 		}
-		
-		return null;
 	}
 
-
+	public List<?> generateOffers(int customerId, int bid) {
+		List<OfferDto> offersList = new ArrayList<>();
+		
+		List<Object[]> list = flightBookingRepository.getMyBookings(customerId); // list of bookings for this customer
+		double totalAmount = 0;
+		Object[] currentBooking = list.get(list.size()-1);
+		double currentBookingAmount = (double) currentBooking[1];
+		System.out.println("Current Booking amount: " +currentBookingAmount);
+		if(list.size()==1) {
+			OfferDto offerDto = new OfferDto(bid, "FIRST BOOKING DISCOUNT", "percentage", 30, 0, 100);
+			offersList.add(offerDto);
+		}else {
+			for(Object[] obj : list) {
+				double amount = (double) obj[1];
+				totalAmount+=amount;
+			}
+			System.out.println("TOTAL AMOUNT:" + totalAmount);
+			double average = (totalAmount-currentBookingAmount)/(list.size()-1);
+			System.out.println("AVERAGE" + average);
+			
+			if(currentBookingAmount > average) {
+				System.out.println("Creating consistency discount");
+				OfferDto offerDto  = new OfferDto(bid, "CONSISTENCY DISCOUNT", "percentage", 10, 0, 200);
+				offersList.add(offerDto);
+			}
+		}
+		
+		LocalDate bookingDate = LocalDate.parse(currentBooking[2].toString());
+		
+		System.out.println(bookingDate);
+		
+		int month = bookingDate.getMonthValue();
+		System.out.println("MONTH = " + month);
+		
+		if(month == 2 || month == 3) {
+			System.out.println("Creating Off season discount");
+			OfferDto offerDto  = new OfferDto(bid, "OFF SEASON DISCOUNT", "percentage", 10, 0, 100);
+			offersList.add(offerDto);
+		}
+		
+		LocalDate presentDate = LocalDate.now();
+		int monthValue = presentDate.getMonthValue();
+		System.out.println(monthValue);
+		
+		long daysBetween = ChronoUnit.DAYS.between(presentDate, bookingDate);
+		System.out.println(daysBetween);
+		if(daysBetween > 60) {
+			System.out.println("Creating Early Bird discount");
+			OfferDto offerDto  = new OfferDto(bid, "EARLY BIRD DISCOUNT", "percentage", 15, 0, 0);
+			offersList.add(offerDto);
+		}
+		
+		OfferDto offerDto  = new OfferDto(bid, "EARN POINTS ON THIS BOOKING", "percentage", 0, 0, 50);
+		offersList.add(offerDto);
+		
+		return offersList;
+	}
 }
