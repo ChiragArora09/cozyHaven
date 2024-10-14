@@ -20,8 +20,11 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("select r from Room r where r.hotel.id = ?1 and r.roomType = ?2 and (r.totalRooms - r.bookedRooms) > 0")
     List<Room> findByHotelRoomType(int hotelId, RoomType roomType);
 
-     @Query(value="select h.hotel_name,hrt.bed_type,hrt.room_type,hrt.price,a.breafast_lunc,a.breakfast,a.free_wifi,a.gym,a.parking_area,a.spa,a.swimming_pool,r.rating,r.star,he.cancellation_info,he.complimentary,c.fullname from hotel h join hotel_room_type hrt on hrt.hotel_id=h.id join amenities a on a.room_id=hrt.id join hotel_extra he on he.room_id=hrt.id left join review r on r.hotel_id=h.id left join customer c on r.customer_id=c.id where hrt.id=?1",nativeQuery=true)
+     @Query(value="select h.hotel_name,hrt.bed_type,hrt.room_type,hrt.price,a.breafast_lunc,a.breakfast,a.free_wifi,a.gym,a.parking_area,a.spa,a.swimming_pool,he.cancellation_info,he.complimentary,h.description from hotel h join hotel_room_type hrt on hrt.hotel_id=h.id join amenities a on a.room_id=hrt.id join hotel_extra he on he.room_id=hrt.id left join review r on r.hotel_id=h.id left join customer c on r.customer_id=c.id where hrt.id=?1",nativeQuery=true)
 	 List<Object[]> findAvailableRoom(int roomId);
+    
+	 @Query("select r from Room r where r.hotel.id=?1 ")
+	List<Room> getAllRooms(int hotelId);
 
 
 }

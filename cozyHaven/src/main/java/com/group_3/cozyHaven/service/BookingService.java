@@ -19,6 +19,8 @@ import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.repository.BookingRepository;
 import com.group_3.cozyHaven.repository.CustomerRepository;
 import com.group_3.cozyHaven.repository.RoomRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class BookingService {
@@ -97,29 +99,6 @@ public class BookingService {
 	}
 
 
-	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {
-	    List<Object[]> list = bookingRepository.findAllBooking(customerId);  
-	    List<BookingDetailsDto> bookingDetails = new ArrayList<>();
-	    
-	    for (Object[] obj : list) { 
-	    	int bid=(int)obj[0];
-	        LocalDate bookedDate =LocalDate.parse(obj[1].toString());  
-	        String checkOutDate = obj[2].toString();
-	        LocalDate checkInDate = LocalDate.parse(obj[3].toString());
-	        int numberOfRooms = (int) obj[4];
-	        int numGuests = (int) obj[5];
-	        String totalAmount = obj[6].toString();
-	        String status = obj[7].toString();
-	        int hotelId=(int)obj[8];
-	        String hotelName = obj[9].toString();
-	        String location = obj[10].toString();
-	        
-	        BookingDetailsDto dto = new BookingDetailsDto(bid,bookedDate,checkOutDate,checkInDate, numberOfRooms, numGuests, totalAmount, status,hotelId, hotelName, location);
-	        bookingDetails.add(dto);
-	    }
-
-	    return bookingDetails;
-	}
 
 	public Booking cancelBooking(int customerId,int bookingId) throws InvalidIdException {
 		
@@ -139,14 +118,52 @@ public class BookingService {
 		roomRepository.save(room);
 		return booking;
 	}
+	
+	public List<BookingDetailsDto> getBookingOfCustomer(int customerId) {
+	    List<Object[]> list = bookingRepository.findAllBooking(customerId);  
+	    List<BookingDetailsDto> bookingDetails = new ArrayList<>();
+	    
+	    for (Object[] obj : list) { 
+	    	int bid=(int)obj[0];
+	        LocalDate bookedDate =LocalDate.parse(obj[1].toString());  
+	        String checkInDate = obj[2].toString();
+	        LocalDate checkOutDate = LocalDate.parse(obj[3].toString());
+	        int numberOfRooms = (int) obj[4];
+	        int numGuests = (int) obj[5];
+	        String totalAmount = obj[6].toString();
+	        String status = obj[7].toString();
+	        
+	        String hotelName = obj[8].toString();
+	        String location = obj[9].toString();
+	        int hotelId=(int)obj[10];
+	        
+	        BookingDetailsDto dto = new BookingDetailsDto(bid,bookedDate,checkInDate,checkOutDate, numberOfRooms, numGuests, totalAmount, status, hotelId, hotelName, location);
+	        bookingDetails.add(dto);
+	    }
 
-
-	public List<Booking> allBooking() {
-		return bookingRepository.findAll();
-		
+	    return bookingDetails;
 	}
 
 
+	public List<BookingDetailsDto> allBooking(int serviceProviderId) {
+		List<Object[]> list=bookingRepository.findBooking(serviceProviderId);
+		List<BookingDetailsDto> bookingDetailsDto=new ArrayList<>();	
+		
+		for(Object[] obj:list) {
+			String hotelName = obj[0].toString();
+	        String location = obj[1].toString();
+			LocalDate bookedDate =LocalDate.parse(obj[2].toString());  
+			LocalDate checkInDate = LocalDate.parse(obj[3].toString());
+	        String checkOutDate = obj[4].toString();
+	        
+	        String status = obj[5].toString();
+	        
+	        BookingDetailsDto dto=new BookingDetailsDto(bookedDate, checkOutDate, checkInDate,status,hotelName, location);
+	        bookingDetailsDto.add(dto);
+		}
+		return bookingDetailsDto;
+		}
+		
 	public List<BookingDetailsDto> getMyBooking(int customerId, String bookingType, String bookingPeriod) {
 		if(bookingType.equals("Hotel")) {
 			List<Object[]> list=bookingRepository.getBookedDate(customerId);

@@ -10,7 +10,9 @@ public class HolidayPackageDto {
 	
 	private int holidayPackageId;
 	
-	private String location;
+	private String fromLocation;
+	
+	private String toLocation;
 	
 	private String name;
 	
@@ -18,12 +20,40 @@ public class HolidayPackageDto {
 	
 	private String price;
 	
+	private Double discount;
+	
+	private String code;
+	
 	private String numActivities;
 	
 	private String hotelTransfer;
 	
 	private String meals;
+	
+	private String vehicleInfo;
+	
+	private String vehicleType;
 
+	public HolidayPackageDto(int packageHotelId, int holidayPackageId, String fromLocation, String toLocation,Double discount, String code,
+			String name, String info, String price, String numActivities,
+			String hotelTransfer, String meals, String vehicleInfo, String vehicleType) {
+		super();
+		this.packageHotelId = packageHotelId;
+		this.holidayPackageId = holidayPackageId;
+		this.fromLocation = fromLocation;
+		this.toLocation = toLocation;
+		this.price = price;
+		this.discount = discount;
+		this.name = name;
+		this.info = info;
+		
+		this.code = code;
+		this.numActivities = numActivities;
+		this.hotelTransfer = hotelTransfer;
+		this.meals = meals;
+		this.vehicleInfo = vehicleInfo;
+		this.vehicleType = vehicleType;
+	}
 
 	public int getPackageHotelId() {
 		return packageHotelId;
@@ -33,8 +63,6 @@ public class HolidayPackageDto {
 		this.packageHotelId = packageHotelId;
 	}
 
-	
-
 	public int getHolidayPackageId() {
 		return holidayPackageId;
 	}
@@ -43,12 +71,20 @@ public class HolidayPackageDto {
 		this.holidayPackageId = holidayPackageId;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getFromLocation() {
+		return fromLocation;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setFromLocation(String fromLocation) {
+		this.fromLocation = fromLocation;
+	}
+
+	public String getToLocation() {
+		return toLocation;
+	}
+
+	public void setToLocation(String toLocation) {
+		this.toLocation = toLocation;
 	}
 
 	public String getName() {
@@ -75,6 +111,22 @@ public class HolidayPackageDto {
 		this.price = price;
 	}
 
+	public Double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public String getNumActivities() {
 		return numActivities;
 	}
@@ -99,21 +151,24 @@ public class HolidayPackageDto {
 		this.meals = meals;
 	}
 
-	public HolidayPackageDto(int packageHotelId, int holidayPackageId, String location, String name, String info,
-			String price, String numActivities, String hotelTransfer, String meals) {
-		super();
-		this.packageHotelId = packageHotelId;
-		this.holidayPackageId = holidayPackageId;
-		this.location = location;
-		this.name = name;
-		this.info = info;
-		this.price = price;
-		this.numActivities = numActivities;
-		this.hotelTransfer = hotelTransfer;
-		this.meals = meals;
+	public String getVehicleInfo() {
+		return vehicleInfo;
+	}
+
+	public void setVehicleInfo(String vehicleInfo) {
+		this.vehicleInfo = vehicleInfo;
+	}
+
+	public String getVehicleType() {
+		return vehicleType;
+	}
+
+	public void setVehicleType(String vehicleType) {
+		this.vehicleType = vehicleType;
 	}
 
 
+	
 	
 
 	

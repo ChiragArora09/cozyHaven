@@ -18,7 +18,10 @@ public interface HolidayPackageRepository extends JpaRepository<HolidayPackage, 
 	+ " where h.from_location=? and h.to_location=?\r\n"
 	+ "and h.type=? and h.num_guests=? and h.num_days=?",nativeQuery=true)*/
 	
-	@Query("select ph.id, h.id, ph.location, ph.name, ph.price, ph.info,e.numActivities, e.hotelTransfer, e.meals from Extra e join e.holidayPackage h join h.packageHotel ph where h.fromLocation = ?1 and h.toLocation = ?2 and h.type = ?3 and h.numGuests = ?4 and h.numDays = ?5")
+	//@Query("select ph.id, h.id, ph.fromLocation,ph.toLocation, ph.name, ph.price, ph.info,e.numActivities, e.hotelTransfer, e.meals from Extra e join e.holidayPackage h join h.packageHotel ph  where h.fromLocation = ?1 and h.toLocation = ?2 and h.type = ?3 and h.numGuests = ?4 and h.numDays = ?5")
+	
+	@Query(value="select ph.id,hp.id,hp.from_location,hp.to_location,hp.discount,hp.code,ph.name,ph.info,ph.price, e.num_activities,e.hotel_transfer,e.meals,v.info,v.type from holiday_package hp join package_hotel ph on hp.package_hotel_id = ph.id join holiday_package_vehicle hv ON hp.id = hv.holiday_package_id join package_vehicle v ON hv.package_vehicle_id = v.id join extra e ON e.holiday_package_id = hp.id "
+			+ "where hp.from_location = ? AND hp.to_location = ? and hp.type=? and hp.num_guests=? and num_days=?",nativeQuery = true)
 	List<Object[]> findByDetails(String fromLocation, String toLocation, String type, int numGuests, int numDays);
 
 	

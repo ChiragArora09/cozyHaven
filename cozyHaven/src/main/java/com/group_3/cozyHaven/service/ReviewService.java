@@ -1,10 +1,16 @@
 package com.group_3.cozyHaven.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.group_3.cozyHaven.dto.BookingDetailsDto;
+import com.group_3.cozyHaven.dto.ReviewDto;
+import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Customer;
 import com.group_3.cozyHaven.model.Hotel;
@@ -53,4 +59,37 @@ public class ReviewService {
 		
 	}
 
-}
+	public List<ReviewDto> getAllReviews(int serviceProviderId) {
+		List<Object[]> list=reviewRepository.findBooking(serviceProviderId);
+		List<ReviewDto> reviewDto=new ArrayList<>();	
+		
+		for(Object[] obj:list) {
+			String id=obj[0].toString();
+			String comments = obj[1].toString();
+	        String rating = obj[2].toString();
+			
+	        String star = obj[3].toString();
+	        
+	        String hotelName = obj[4].toString();
+	        String location = obj[5].toString();
+	        
+	       ReviewDto dto=new ReviewDto(id,comments,rating,star,hotelName,location);
+	        reviewDto.add(dto);
+		}
+		return reviewDto;
+		}
+
+	public void deleteReview(int id, int serviceProviderId) throws InputValidationException {
+		Optional<Review> optionalReview = reviewRepository.findById(id);
+        if (optionalReview.isEmpty()) {
+            throw new InputValidationException("Hotel not found with id: " + id);
+        }
+
+        Review review= optionalReview.get();
+        reviewRepository.deleteById(id); 
+
+	}
+		
+		
+	}
+

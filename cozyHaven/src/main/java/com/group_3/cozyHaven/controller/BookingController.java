@@ -4,17 +4,21 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group_3.cozyHaven.dto.BookingDetailsDto;
-import com.group_3.cozyHaven.dto.HotelBookedDateDto;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.exception.RoomUnavailableException;
@@ -25,6 +29,7 @@ import com.group_3.cozyHaven.utility.GetId;
 
 @RestController
 @RequestMapping("/booking")
+@CrossOrigin(origins = {"http://localhost:4200"})
 public class BookingController {
 	
 	
@@ -80,8 +85,11 @@ public class BookingController {
 	}
 	
 	@GetMapping("/all")
-	public List<Booking> allBooking(){
-		return bookingService.allBooking();
+	public List<BookingDetailsDto> allBooking(Principal principal){
+		
+		String username=principal.getName();
+    	int serviceProviderId=getId.getIdByUsername(username);
+		return bookingService.allBooking(serviceProviderId);
 	}
 	
 	

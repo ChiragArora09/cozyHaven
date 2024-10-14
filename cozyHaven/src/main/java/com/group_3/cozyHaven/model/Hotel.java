@@ -61,7 +61,7 @@ public class Hotel {
 	public void setServiceProvider(ServiceProvider serviceProvider) {
 		this.serviceProvider = serviceProvider;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Hotel [id=" + id + ", hotelName=" + hotelName + ", description=" + description + ", location="
