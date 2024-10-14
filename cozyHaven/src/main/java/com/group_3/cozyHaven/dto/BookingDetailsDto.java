@@ -34,6 +34,16 @@ public class BookingDetailsDto {
 		this.hotelName = hotelName;
 		this.location = location;
 	}
+	public BookingDetailsDto(LocalDate bookedDate, String checkOutDate, LocalDate checkInDate, String status,
+			String hotelName, String location) {
+		super();
+		this.bookedDate = bookedDate;
+		this.checkOutDate = checkOutDate;
+		this.checkInDate = checkInDate;
+		this.status = status;
+		this.hotelName = hotelName;
+		this.location = location;
+	}
 	public int getBid() {
 		return bid;
 	}

@@ -34,6 +34,11 @@ public class ImageService {
 
     public List<String> uploadImage(MultipartFile[] files, int hotelId,int roomId) throws IOException {
         List<String> uploadedFilePaths = new ArrayList<>();
+        
+        if (files == null || files.length == 0) {
+            throw new RuntimeException("No files were uploaded");
+        }
+        
         Optional<Room> optionalRoom = roomRepository.findById(roomId);
         if (optionalRoom.isEmpty()) {
             throw new RuntimeException("Room not found with id: " + roomId);
@@ -44,7 +49,7 @@ public class ImageService {
             if (originalName == null || originalName.isEmpty()) {
                 throw new RuntimeException("File name is empty or null for one of the files.");
             }
-
+            
             String hotelFolderPath = folderPath + File.separator + hotelId;
             File hotelDirectory = new File(hotelFolderPath);
             if (!hotelDirectory.exists()) {
@@ -71,13 +76,20 @@ public class ImageService {
         return uploadedFilePaths;
     }
 
-	public void deleteImage(int imageId) throws InvalidIdException {
+	  public Image deleteImage(int imageId) throws InvalidIdException {
 		
 		Optional<Image> optional=imageRepository.findById(imageId);
 		if(optional.isEmpty()) {
 			throw new InvalidIdException("Invalid Id Given");
 		}
 	   Image image=optional.get();
-	   imageRepository.deleteById(imageId);
+	    imageRepository.delete(image);
+	    return image;
 	    }
+
+	public List<Image> getImagesByRoomId(int roomId) {
+		 return imageRepository.findByRoomId(roomId);
+	}
+
+	
 }

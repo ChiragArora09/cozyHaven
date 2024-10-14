@@ -27,10 +27,11 @@ public class ServiceProviderService {
 	
 	public ServiceProvider addServiceProvider(ServiceProvider serviceProvider) {
 		User user = serviceProvider.getUser();
+
 		ServiceType serviceType = serviceProvider.getServiceType();
 		String type = serviceType.toString().toUpperCase();
 		user.setRole("ROLE_"+type+"_SERVICE_PROVIDER");
-//		user.setRole("ROLE_SERVICE_PROVIDER");
+
 		
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user = userRepository.save(user); 

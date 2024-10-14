@@ -17,12 +17,14 @@ import com.group_3.cozyHaven.model.Amenities;
 import com.group_3.cozyHaven.model.Booking;
 import com.group_3.cozyHaven.model.Hotel;
 import com.group_3.cozyHaven.model.HotelExtra;
+import com.group_3.cozyHaven.model.Image;
 import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.model.ServiceProvider;
 import com.group_3.cozyHaven.repository.AmenitiesRepository;
 import com.group_3.cozyHaven.repository.BookingRepository;
 import com.group_3.cozyHaven.repository.HotelExtraRepository;
 import com.group_3.cozyHaven.repository.HotelRepository;
+import com.group_3.cozyHaven.repository.ImageRepository;
 import com.group_3.cozyHaven.repository.RoomRepository;
 
 @Service
@@ -43,7 +45,9 @@ public class RoomService {
 	@Autowired
 	private HotelExtraRepository hotelExtraRepository;
 
-    
+    @Autowired
+    private ImageRepository imageRepository;
+	
 	 @Autowired
 	 private BookingRepository bookingRepository;
 
@@ -96,7 +100,8 @@ public class RoomService {
 		return roomRepository.findByHotelRoomType(hotelId,roomType);
 	}
 
-	public void updateRoomBooking(String name) {
+	public List<Booking> updateRoomBooking()  {
+		
 		LocalDate date=LocalDate.now();
 	    List<Booking> bookings=bookingRepository.findByCheckOutDateLessThanEqual(date);
 		
@@ -107,7 +112,9 @@ public class RoomService {
 	         roomRepository.save(room);
 	         booking.setStatus(BookedStatus.CHECKED_OUT);
 	         bookingRepository.save(booking);
+	        
 		}
+		 return bookings;
 		
 	}
 
@@ -127,20 +134,17 @@ public class RoomService {
 		    String parkingArea=obj[8].toString();
 		    String spa=obj[9].toString();
 		    String swimmingPool=obj[10].toString();
-		    String rating=obj[11]!=null?obj[11].toString():"";
-		    String star=obj[12]!=null?obj[12].toString():"";
-		    String cancellationInfo=obj[13].toString();
-		    String complimentary=obj[14].toString();
-		    String fullName=obj[15]!= null ? obj[15].toString() : "";	    
-		    RoomDetailsDto dto=new RoomDetailsDto(hotelName, bedType, roomType,price,breakFastLunch,breakFast, freeWifi, gym, parkingArea, spa, swimmingPool, rating, star, cancellationInfo,complimentary,fullName);
+		    String cancellationInfo=obj[11].toString();
+		    String complimentary=obj[12].toString();   
+		    String description=obj[13].toString();
+		    RoomDetailsDto dto=new RoomDetailsDto(hotelName, bedType, roomType,price,breakFastLunch,breakFast, freeWifi, gym, parkingArea, spa, swimmingPool, cancellationInfo,complimentary,description);
 		    listDto.add(dto);
 	}
 		return listDto;
 
 }
 
-	public HotelExtra addExtra(int roomId, int serviceProviderId, HotelExtra hotelExtra) throws InputValidationException {
-		ServiceProvider serviceProvider=serviceProviderService.getById(serviceProviderId);
+	public HotelExtra addExtra(int roomId,  HotelExtra hotelExtra) throws InputValidationException {
 		 Optional<Room> optionalRoom = roomRepository.findById(roomId);
 	        if (optionalRoom.isEmpty()) {
 	            throw new InputValidationException("Room not found with id: " + roomId);
@@ -152,4 +156,29 @@ public class RoomService {
 	        
 	       
 	}
+
+	public List<Room> getAllRooms(int hotelId) {
+		List<Room> rooms=roomRepository.getAllRooms(hotelId);
+		return rooms;
+	}
+
+	public void save(Image img) {
+		imageRepository.save(img);
+		
+	}
+
+	public Room getRoomById(int id) {
+		return roomRepository.findById(id).get();
+	}
+
+	public List<Image> getImageByRoomId(int roomId) throws InputValidationException {
+		Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty()) {
+            throw new InputValidationException("Room not found with id: " + roomId);
+        }
+        return imageRepository.findByRoomId(roomId);
+	}
+
+	
+	
 }

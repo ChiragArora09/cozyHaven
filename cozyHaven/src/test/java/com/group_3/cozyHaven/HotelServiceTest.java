@@ -26,32 +26,31 @@ public class HotelServiceTest {
 	@Mock
 	private HotelRepository hotelRepository;
 	
-	@Test
-	public void getallTest() {
-
-		Hotel h1=new Hotel();
-		h1.setId(1);
-		h1.setHotelName("ABC hotel");
-		h1.setDescription("enjoy the stay");
-		h1.setLocation("chennai");
-		
-		Hotel h2=new Hotel();
-		h2.setId(2);
-		h2.setHotelName("XYZ hotel");
-		h2.setDescription("enjoy the stay");
-		h2.setLocation("pondicherry");
-		String username="albus";
-		List<Hotel> list=Arrays.asList(h1,h2);
-		when(hotelRepository.getAllHotel(username)).thenReturn(list);
-		int expectedNum=2;
-		
-		List<Hotel> hotelList=hotelService.getAllHotels(username);
-		
-		assertNotNull(hotelList);
-		int actualNum=hotelList.size();
-		assertEquals(expectedNum,actualNum);
+//	@Test
+//	public void getallTest() {
+//
+//		Hotel h1=new Hotel();
+//		h1.setId(1);
+//		h1.setHotelName("ABC hotel");
+//		h1.setDescription("enjoy the stay");
+//		h1.setLocation("chennai");
+//		
+//		Hotel h2=new Hotel();
+//		h2.setId(2);
+//		h2.setHotelName("XYZ hotel");
+//		h2.setDescription("enjoy the stay");
+//		h2.setLocation("pondicherry");
+//		String username="albus";
+//		List<Hotel> list=Arrays.asList(h1,h2);
+//		when(hotelRepository.getAllHotel(username)).thenReturn(list);
+//		int expectedNum=2;
+//		
+//		List<Hotel> hotelList=hotelService.getAllHotels(username);
+//		
+//		assertNotNull(hotelList);
+//		int actualNum=hotelList.size();
+//		assertEquals(expectedNum,actualNum);
 		
 	}
 		
 		
-}

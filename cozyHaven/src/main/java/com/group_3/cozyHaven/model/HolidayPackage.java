@@ -22,6 +22,10 @@ public class HolidayPackage {
 	
 	private String type;
 	
+	private double discount;
+	
+	private String code;
+	
 	private int numGuests;
 	
 	private int numDays;
@@ -83,6 +87,22 @@ public class HolidayPackage {
 
 	public void setNumDays(int numDays) {
 		this.numDays = numDays;
+	}
+
+	public double getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

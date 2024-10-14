@@ -8,14 +8,15 @@ import com.group_3.cozyHaven.enums.RoomType;
 
 public class HotelResultDto {
 	
-	 private int roomId;
-	    private String roomType;
+	      private int roomId;
+	   private String roomType;
 	    private String price;
 	    private String hotelName;
 	    private String hotelLocation;
 	    private String star;
 	    private String rating;
         private int hotelId;
+		
 		public HotelResultDto(int roomId, String roomType, String price, String hotelName, String hotelLocation,
 				String star, String rating, int hotelId) {
 			super();
@@ -75,6 +76,6 @@ public class HotelResultDto {
 		}
 		public void setHotelId(int hotelId) {
 			this.hotelId = hotelId;
-		}
+	}
 		
 }

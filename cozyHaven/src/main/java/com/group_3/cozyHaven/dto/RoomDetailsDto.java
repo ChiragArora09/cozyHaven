@@ -24,15 +24,17 @@ public class RoomDetailsDto {
 	
 	private String swimmingPool;
 	
-	private String rating;
 	
-	private String star;
+	
+	
 	
 	private String cancellationInfo;
 	
 	private String complimentary;
 	
-	private String fullName;
+	private String description;
+	
+	
 
 	public String getHotelName() {
 		return hotelName;
@@ -122,22 +124,7 @@ public class RoomDetailsDto {
 		this.swimmingPool = swimmingPool;
 	}
 
-	public String getRating() {
-		return rating;
-	}
-
-	public void setRating(String rating) {
-		this.rating = rating;
-	}
-
-	public String getStar() {
-		return star;
-	}
-
-	public void setStar(String star) {
-		this.star = star;
-	}
-
+	
 	public String getCancellationInfo() {
 		return cancellationInfo;
 	}
@@ -154,17 +141,19 @@ public class RoomDetailsDto {
 		this.complimentary = complimentary;
 	}
 
-	public String getFullName() {
-		return fullName;
+	
+	
+	public String getDescription() {
+		return description;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public RoomDetailsDto(String hotelName, String bedType, String roomType, String price, String breakFastLunch,
 			String breakFast, String freeWifi, String gym, String parkingArea, String spa, String swimmingPool,
-			String rating, String star, String cancellationInfo, String complimentary, String fullName) {
+			 String cancellationInfo, String complimentary,String description) {
 		super();
 		this.hotelName = hotelName;
 		this.bedType = bedType;
@@ -177,11 +166,10 @@ public class RoomDetailsDto {
 		this.parkingArea = parkingArea;
 		this.spa = spa;
 		this.swimmingPool = swimmingPool;
-		this.rating = rating;
-		this.star = star;
+		
 		this.cancellationInfo = cancellationInfo;
 		this.complimentary = complimentary;
-		this.fullName = fullName;
+		this.description=description;
 	}
 
 	

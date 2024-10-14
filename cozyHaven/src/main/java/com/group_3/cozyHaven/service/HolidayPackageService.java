@@ -85,14 +85,19 @@ public class HolidayPackageService {
 		for(Object[] obj:list) {
 			int packageHotelId=(int) obj[0];
 		    int holidayPackageId=(int) obj[1];
-		    String location=obj[2].toString();
-			String name=obj[3].toString();
-			String info=obj[4].toString();
-		    String price=obj[5].toString();
-			String numActivities=obj[6].toString();
-			String hotelTransfer=obj[7].toString();
-			String meals=obj[8].toString();
-			HolidayPackageDto dto=new HolidayPackageDto(packageHotelId,holidayPackageId,location,name,info,price,numActivities,hotelTransfer,meals);
+		    fromLocation=obj[2].toString();
+		    toLocation=obj[3].toString();
+		    double discount=Double.valueOf(obj[4].toString());
+		    String code=obj[5].toString();
+			String name=obj[6].toString();
+			String info=obj[7].toString();
+		    String price=obj[8].toString();
+		    String numActivities=obj[9].toString();
+			String hotelTransfer=obj[10].toString();
+			String meals=obj[11].toString();
+			String vehicleInfo=obj[12].toString();
+			String vehicleType=obj[13].toString();
+			HolidayPackageDto dto=new HolidayPackageDto(packageHotelId,holidayPackageId,fromLocation,toLocation,discount,code,name,info,price,numActivities,hotelTransfer,meals,vehicleInfo,vehicleType);
 			
 			//dto.setPackageHotelId(packageHotelId);
 			

@@ -1,5 +1,9 @@
 package com.group_3.cozyHaven.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
 
@@ -12,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.group_3.cozyHaven.dto.MessageDto;
 import com.group_3.cozyHaven.dto.RoomDetailsDto;
@@ -20,7 +26,9 @@ import com.group_3.cozyHaven.enums.RoomType;
 import com.group_3.cozyHaven.exception.InputValidationException;
 import com.group_3.cozyHaven.exception.InvalidIdException;
 import com.group_3.cozyHaven.model.Amenities;
+import com.group_3.cozyHaven.model.Booking;
 import com.group_3.cozyHaven.model.HotelExtra;
+import com.group_3.cozyHaven.model.Image;
 import com.group_3.cozyHaven.model.Room;
 import com.group_3.cozyHaven.service.RoomService;
 import com.group_3.cozyHaven.utility.GetId;
@@ -36,10 +44,14 @@ public class RoomController {
 	@Autowired
 	private GetId getId;
 	
-	@PostMapping("/updateAvailability")
-	public void updateRoomBooking(Principal principal){
-		String name=principal.getName();
-		roomService.updateRoomBooking(name);
+	@PutMapping("/updateAvailability")
+	public ResponseEntity<?> updateRoomBooking(){
+		
+		
+			
+		List<Booking> book=	roomService.updateRoomBooking();
+		return ResponseEntity.ok(book);
+		
 	}
 	
 	@GetMapping("/amenities/{roomId}")
@@ -88,15 +100,55 @@ public class RoomController {
 	    }
 	
 	@PostMapping("/add/extras/{roomId}")
-	public ResponseEntity<?> addExtra(@PathVariable int roomId,Principal principal,@RequestBody HotelExtra hotelExtra, MessageDto dto ) {
+	public ResponseEntity<?> addExtra(@PathVariable int roomId,@RequestBody HotelExtra hotelExtra, MessageDto dto ) {
 		 try {
-			 String username=principal.getName();
-			 int serviceProviderId=getId.getIdByUsername(username);
-			HotelExtra addExtra=roomService.addExtra(roomId,serviceProviderId,hotelExtra);
+			 
+			HotelExtra addExtra=roomService.addExtra(roomId,hotelExtra);
 			return ResponseEntity.ok(addExtra);
 		} catch (InputValidationException e) {
 			return ResponseEntity.badRequest().body(dto);
 		}
 	}
-	   
+	
+	@GetMapping("/all/{hotelId}")
+	public List<Room> getAllRoom(@PathVariable int hotelId){
+		List<Room> rooms=roomService.getAllRooms(hotelId);
+		return rooms;
+	}
+	
+	@PostMapping("/image/upload/{roomId}")
+	public void addRoomImage(@PathVariable int roomId,@RequestParam MultipartFile file) {
+		Room room;
+		try {
+			room = roomService.getById(roomId);
+		String location="F:/Angular Fsd/cozyhaven-ui/cozyhaven-client/cozyhaven-client/src/assets";
+		Image img=new Image();
+			Files.copy(file.getInputStream(), Path.of(location, file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+			img.setFilePath(Path.of(location,file.getOriginalFilename()).toString());
+			img.setImageName(file.getOriginalFilename());
+			img.setRoom(room);
+			roomService.save(img);	
+			}
+		catch(IOException |InvalidIdException e) {
+		      e.printStackTrace();
+	}
+	}
+	
+	@GetMapping("/get/image/{roomId}")
+	public ResponseEntity<?> getImages(@PathVariable int roomId){
+		
+		try {
+			List<Image> images = roomService.getImageByRoomId(roomId);
+			return ResponseEntity.ok(images);
+		} catch (InputValidationException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+		
+	}
+	
+	@GetMapping("/get/{id}")
+	public Room getRoom(@PathVariable int id) {
+		return roomService.getRoomById(id);
+	}
 }
