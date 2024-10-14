@@ -255,7 +255,7 @@ public class FlightController {
 		return flightBookingService.getAllOffers(flightId);
 	}
 	
-	// GET ALL OFFERS FOR A PARTICULAR FLIGHT ON CUSTOMER UI
+	// GET ALL OFFERS FOR A PARTICULAR FLIGHT SERVICE PROVIDER
 	@GetMapping("/getMyFlightOffers/{flightId}")
 	public List<?> getMyFlightOffers(@PathVariable int flightId) {
 		return flightBookingService.getMyFlightOffers(flightId);
