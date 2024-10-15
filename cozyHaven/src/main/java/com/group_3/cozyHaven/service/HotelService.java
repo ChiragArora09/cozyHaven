@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,10 @@ public class HotelService {
 	@Autowired
 	private ReviewRepository reviewRepository;
 	
+	private Logger logger=LoggerFactory.getLogger(HotelService.class);
+	
 	public Hotel addHotel(int serviceProviderId, Hotel hotel) throws InputValidationException {
-		
+		logger.info("hotel added");
 		ServiceProvider serviceProvider=serviceProviderService.getById(serviceProviderId);
 		hotel.setServiceProvider(serviceProvider);
 		return hotelRepository.save(hotel);
@@ -88,9 +92,11 @@ public class HotelService {
 	
 	public Hotel getById(int hotelId) throws InvalidIdException {
 		Optional<Hotel> optional=hotelRepository.findById(hotelId);
-		if(optional.isEmpty())
+		if(optional.isEmpty()) {
+			logger.error("Invalid Id found");
 			throw new InvalidIdException("Invalid Id Given");
-		
+		}
+		logger.info("Hotel Retrieved");
 		return optional.get();
 	}
 

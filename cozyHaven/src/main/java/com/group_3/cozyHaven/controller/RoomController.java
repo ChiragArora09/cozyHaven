@@ -47,8 +47,6 @@ public class RoomController {
 	@PutMapping("/updateAvailability")
 	public ResponseEntity<?> updateRoomBooking(){
 		
-		
-			
 		List<Booking> book=	roomService.updateRoomBooking();
 		return ResponseEntity.ok(book);
 		
@@ -61,7 +59,7 @@ public class RoomController {
 	}
 	
 	@GetMapping("/{hotelId}/{roomType}")
-	public ResponseEntity<?> checkRoomType(@PathVariable int hotelId,@PathVariable RoomType roomType){
+	public ResponseEntity<?> checkRoomType(@PathVariable int hotelId,@PathVariable String roomType){
 		List<Room> rooms=roomService.checkRoomType(hotelId,roomType);
 		return ResponseEntity.ok(rooms);
 	}
