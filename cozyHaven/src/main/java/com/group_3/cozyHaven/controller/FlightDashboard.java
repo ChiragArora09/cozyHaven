@@ -26,9 +26,6 @@ import com.group_3.cozyHaven.utility.GetId;
 public class FlightDashboard {
 	
 	@Autowired
-	private FlightService flightService;
-	
-	@Autowired
 	private FlightBookingService flightBookingService;
 	
 	@Autowired
@@ -74,5 +71,12 @@ public class FlightDashboard {
 		String serviceProviderUsername = principal.getName();
 		int serviceProviderId = getId.getIdByUsername(serviceProviderUsername);
 		return flightBookingService.getFlightRevenueByDate(serviceProviderId, flightId);
+	}
+	
+	@GetMapping("/popularRoutes")
+	public List<PopularFlightsDto> getPopularRoutes(Principal principal){
+		String serviceProviderUsername = principal.getName();
+		int serviceProviderId = getId.getIdByUsername(serviceProviderUsername);
+		return flightBookingService.getPopularRoutes(serviceProviderId);
 	}
 }

@@ -29,7 +29,6 @@ public class SecurityConfig {
 	    http.csrf(AbstractHttpConfigurer::disable)
 	        .authorizeHttpRequests(auth -> auth
 	        		
-
 //	            // Permit all for token generation and signup
 //	            .requestMatchers("/auth/token").permitAll()
 //	            .requestMatchers("/auth/signup").permitAll()

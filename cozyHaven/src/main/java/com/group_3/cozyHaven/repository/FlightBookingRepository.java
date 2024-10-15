@@ -36,4 +36,7 @@ public interface FlightBookingRepository extends JpaRepository<FlightBooking, In
 	@Query(value = "SELECT SUM(fb.amount), fb.date FROM (SELECT DISTINCT fb.id, fb.amount, f.id as flight_id FROM flight_booking fb JOIN flight_seat_booking fsb ON fsb.flight_booking_id = fb.id JOIN flight_seat fs ON fs.id = fsb.flight_seat_id JOIN flight_class fc ON fc.id = fs.flight_class_id JOIN flight f ON f.id=fc.flight_id JOIN service_provider sp ON sp.id=f.service_provider_id WHERE sp.id=?1) as b JOIN flight_booking fb ON fb.id=b.id JOIN flight f ON f.id=b.flight_id WHERE f.id=?2 GROUP BY fb.date", nativeQuery = true)
 	List<Object[]> getFlightRevenueByDates(int serviceProviderId, int flightId);
 
+	@Query(value = "select COUNT(distinct(fsb.flight_booking_id)) as Bookings, CONCAT(fb.source,' -> ',fb.destination) as Route from flight_booking fb JOIN flight_seat_booking fsb on fsb.flight_booking_id=fb.id JOIN flight_seat fs ON fs.id=fsb.flight_seat_id JOIN flight_class fc ON fc.id=fs.flight_class_id JOIN flight f ON f.id=fc.flight_id JOIN service_provider sp ON sp.id=f.service_provider_id WHERE sp.id=?1 GROUP BY fb.source, fb.destination LIMIT 5", nativeQuery = true)
+	List<Object[]> getPopularRoutes(int serviceProviderId);
+
 }

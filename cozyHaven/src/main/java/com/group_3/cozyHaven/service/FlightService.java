@@ -164,4 +164,15 @@ public class FlightService {
 	public List<FlightCity> getFlightRoute(int flightId) {
 		return flightRepository.getFlightRoute(flightId);
 	}
+
+	public void changeStatus(int flightId) {
+		Flight flight = flightRepository.findById(flightId).get();
+		String status = flight.getStatus();
+		if(status.equals("Running")) {
+			flight.setStatus("Not Running");
+		}else {
+			flight.setStatus("Running");
+		}
+		flightRepository.save(flight);
+	}
 }
