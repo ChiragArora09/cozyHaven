@@ -58,13 +58,13 @@ public class CustomerBookingService {
 			}
 			
 			if(bookingPeriod.equals("Past")) {
-				List<VehicleBookingDetails> filteredPastFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getBooking().isBefore(LocalDate.now()) && !detail.getStatus().equals("Cancelled")).toList();
+				List<VehicleBookingDetails> filteredPastFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getBooking().isBefore(LocalDate.now()) && detail.getStatus().equals("Confirmed")).toList();
 				return filteredPastFlightDetailList;
 			}else if(bookingPeriod.equals("Upcoming")) {
-				List<VehicleBookingDetails> filteredUpcomingFlightDetailList = flightBookingDetailsList.stream().filter(detail -> !detail.getStatus().equals("Cancelled") && detail.getBooking().isAfter(LocalDate.now()) || detail.getBooking().isEqual(LocalDate.now())).toList();
+				List<VehicleBookingDetails> filteredUpcomingFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getStatus().equals("Confirmed") && (detail.getBooking().isAfter(LocalDate.now()) || detail.getBooking().isEqual(LocalDate.now()))).toList();
 				return filteredUpcomingFlightDetailList;
 			}else{
-				List<VehicleBookingDetails> filteredCancelledFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getStatus().equals("Cancelled")).toList();
+				List<VehicleBookingDetails> filteredCancelledFlightDetailList = flightBookingDetailsList.stream().filter(detail -> detail.getStatus().equals("Cancelled") || detail.getStatus().equals("Pending")).toList();
 				return filteredCancelledFlightDetailList;
 			}
 			

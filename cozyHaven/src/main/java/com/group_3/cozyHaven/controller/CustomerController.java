@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,8 @@ public class CustomerController {
 	}
 	
 	
-	@PostMapping("/image/upload")
+//	@PostMapping("/image/upload")
+	@PostMapping(value = "/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public void addCustomerImage(Principal principal, @RequestParam MultipartFile file) throws InputValidationException {
 
 		/*Fetch Customer */
@@ -74,6 +76,13 @@ public class CustomerController {
 		String CustomerUsername = principal.getName();
 		int customerId = getId.getIdByUsername(CustomerUsername);
 		return customerService.getById(customerId);
+	}
+	
+	@PostMapping("/update-my-info")
+	public Customer updateCustomerInfo(Principal principal, @RequestBody Customer customer) {
+		String CustomerUsername = principal.getName();
+		int customerId = getId.getIdByUsername(CustomerUsername);
+		return customerService.updateCustomerInfo(customer, customerId);
 	}
 	
 	

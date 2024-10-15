@@ -88,6 +88,17 @@ public class CustomerService {
 		customerRepository.save(customer);
 	}
 
+	public Customer updateCustomerInfo(Customer customer, int customerId) {
+		Customer oldCustomer = customerRepository.findById(customerId).get();
+		oldCustomer.setFullname(customer.getFullname());
+		oldCustomer.setContactNumber(customer.getContactNumber());
+		oldCustomer.setEmail(customer.getEmail());
+		oldCustomer.setAddress(customer.getAddress());
+		oldCustomer.setIdType(customer.getIdType());
+		oldCustomer.setIdNumber(customer.getIdNumber());
+		return customerRepository.save(oldCustomer);
+	}
+
 
 
    
