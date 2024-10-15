@@ -95,9 +95,9 @@ public class RoomService {
 		return optional.get();
 	}
 
-	public List<Room> checkRoomType(int hotelId, RoomType roomType) {
-		
-		return roomRepository.findByHotelRoomType(hotelId,roomType);
+	public List<Room> checkRoomType(int hotelId, String roomType) {
+		RoomType rt=RoomType.valueOf(roomType);
+		return roomRepository.findByHotelRoomType(hotelId,rt);
 	}
 
 	public List<Booking> updateRoomBooking()  {
